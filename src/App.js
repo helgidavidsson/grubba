@@ -1,23 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import { useEffect } from 'react';
+import socketIOClient from 'socket.io-client';
+import ParticipantList from './components/ParticipantList';
+
+const ENDPOINT = "http://localhost:3000/";
 
 function App() {
+  useEffect(() => {
+    const socket = socketIOClient(ENDPOINT);
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    return () => socket.disconnect();
+  }, []);
+
+  
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+          <h1>Hópurinn</h1>
+
+        <ParticipantList/>
+         
       </header>
+
     </div>
   );
 }
