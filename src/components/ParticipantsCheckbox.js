@@ -1,11 +1,13 @@
-export default function ParticipantsCheckbox(
+export default function ParticipantsCheckbox({
     isChecked, 
-    onChange,
-    participantId
-    ) {
-
+    onToggle,
+    participantId,
+    name
+}) 
+{ 
+        console.log(isChecked)
         const handleCheckboxChange = () => {
-            ontoggle(participantId)
+            onToggle(participantId)   
         }
     return(
         <div>
@@ -13,9 +15,8 @@ export default function ParticipantsCheckbox(
                 type="checkbox"
                 checked={isChecked}
                 onChange={handleCheckboxChange}
-                
-                
-                ></input>
+            ></input>
+            <label>{name}</label>
         </div>
     )
 }

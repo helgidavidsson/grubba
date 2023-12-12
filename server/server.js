@@ -7,12 +7,18 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 io.on('connection', (socket) => {
-  console.log('New client connected');
+    console.log('New client connected');
 
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
+    socket.on('toggleParticipant', (data) => {
+        console.log(data);
+        io.emit('participantToggled', data);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Client disconnected');
+    });
 });
 
-const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(4000, () => {
+    console.log('Listening on port 4000');
+});
