@@ -3,18 +3,27 @@ import { useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
 import ParticipantList from './components/ParticipantList';
 
-const ENDPOINT = "http://localhost:3000/";
+const ENDPOINT = "https://6578f347fdd19b26eb2d574d--regal-douhua-84bd69.netlify.app/"; // Replace with your server's address
 
 function App() {
   useEffect(() => {
-    const socket = socketIOClient(ENDPOINT);
+    const newSocket = socketIOClient(ENDPOINT);
+    setSocket(newSocket);
 
-    socket.on('connect', () => {
-      console.log('Connected to server');
+    newSocket.on('initialState', (initialParticipants) => {
+        setParticipants(initialParticipants);
     });
 
-    return () => socket.disconnect();
-  }, []);
+    newSocket.on('participantToggled', (data) => {
+        setParticipants(prevParticipants =>
+            prevParticipants.map(p =>
+                p.id === data.id ? { ...p, isChecked: data.isChecked } : p
+            )
+        );
+    });
+
+    return () => newSocket.disconnect();
+}, []);
 
   
   return (
