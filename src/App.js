@@ -1,6 +1,4 @@
 import './App.css';
-import { useEffect } from 'react';
-import socketIOClient from 'socket.io-client';
 import ParticipantList from './components/ParticipantList';
 
 
