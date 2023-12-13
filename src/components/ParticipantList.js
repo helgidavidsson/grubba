@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ParticipantsCheckbox from "./ParticipantsCheckbox";
 import socketIOClient from 'socket.io-client';
 
-const ENDPOINT = "http://localhost:3000/"; // Replace with your server's address
+const ENDPOINT = "https://6578f347fdd19b26eb2d574d--regal-douhua-84bd69.netlify.app/"; // Replace with your server's address
 
 export default function ParticipantList() {
     const [participants, setParticipants] = useState([
