@@ -17,7 +17,11 @@ export default function ParticipantList() {
     useEffect(() => {
         const newSocket = socketIOClient(ENDPOINT);
         setSocket(newSocket);
-
+    
+        newSocket.on('initialState', (initialParticipants) => {
+            setParticipants(initialParticipants);
+        });
+    
         newSocket.on('participantToggled', (data) => {
             setParticipants(prevParticipants =>
                 prevParticipants.map(p =>
@@ -25,9 +29,9 @@ export default function ParticipantList() {
                 )
             );
         });
-
+    
         return () => newSocket.disconnect();
-    }, []); // Removed the unnecessary dependency
+    }, []);
 
     const handleToggle = (id) => {
         const updatedParticipants = participants.map(p => {
