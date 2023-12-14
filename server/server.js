@@ -8,7 +8,7 @@ app.use(cors())
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "https://657b202f0aaeae0008f7c32d--regal-douhua-84bd69.netlify.app/", // URL of your frontend application
+        origin: "https://657b202f0aaeae0008f7c32d--regal-douhua-84bd69.netlify.app", // URL of your frontend application
         methods: ["GET", "POST"],
         allowedHeaders: ["my-custom-header"],
         credentials: true
@@ -48,6 +48,7 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(3001, () => {
-    console.log('Server is running on port 3001');
+server.listen(80, () => {
+    console.log('Server is running on port 80');
 });
+
