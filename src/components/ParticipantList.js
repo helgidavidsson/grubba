@@ -12,7 +12,7 @@ export default function ParticipantList() {
     ]);
     const [socket, setSocket] = useState(null);
 
-    const ENDPOINT = "http://hopurinn-dev.eu-north-1.elasticbeanstalk.com/"; // Replace with your server's address
+    const ENDPOINT = "https://hopurinn-dev.eu-north-1.elasticbeanstalk.com/"; // Replace with your server's address
 
     useEffect(() => {
         const newSocket = socketIOClient(ENDPOINT);
