@@ -8,7 +8,7 @@ app.use(cors())
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "http://localhost:3000", // URL of your frontend application
+        origin: "https://657b202f0aaeae0008f7c32d--regal-douhua-84bd69.netlify.app/", // URL of your frontend application
         methods: ["GET", "POST"],
         allowedHeaders: ["my-custom-header"],
         credentials: true
