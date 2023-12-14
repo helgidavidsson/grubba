@@ -2,17 +2,17 @@ import { useState, useEffect } from "react";
 import ParticipantsCheckbox from "./ParticipantsCheckbox";
 import socketIOClient from 'socket.io-client';
 
-const ENDPOINT = "https://6578f347fdd19b26eb2d574d--regal-douhua-84bd69.netlify.app/"; // Replace with your server's address
 
 export default function ParticipantList() {
     const [participants, setParticipants] = useState([
         { id: 0, isChecked: false, name: "Helgi Freyr" },
         { id: 1, isChecked: false, name: "Davíð"},
-        // Ensure unique IDs for each participant
         { id: 2, isChecked: false, name: "Kristín Inga" },
         { id: 3, isChecked: false, name: "Katrín Sól" },
     ]);
     const [socket, setSocket] = useState(null);
+
+    const ENDPOINT = "http://hopurinn-dev.eu-north-1.elasticbeanstalk.com/"; // Replace with your server's address
 
     useEffect(() => {
         const newSocket = socketIOClient(ENDPOINT);
