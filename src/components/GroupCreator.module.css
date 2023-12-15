@@ -1,0 +1,16 @@
+.nameContainer{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    
+}
+
+.input {
+    width: 200px;
+    margin: auto;
+}
+
+.table {
+    text-align: center;
+    margin: auto;
+}

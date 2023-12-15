@@ -3,24 +3,31 @@ import ParticipantsCheckbox from "./ParticipantsCheckbox";
 import socketIOClient from 'socket.io-client';
 
 
-export default function ParticipantList() {
-    const [participants, setParticipants] = useState([
-        { id: 0, isChecked: false, name: "Helgi Freyr" },
-        { id: 1, isChecked: false, name: "Davíð"},
-        { id: 2, isChecked: false, name: "Kristín Inga" },
-        { id: 3, isChecked: false, name: "Katrín Sól" },
-    ]);
-    const [socket, setSocket] = useState(null);
+export default function ParticipantList({
+    ENDPOINT,
+}) {
+    const [participants, setParticipants] = useState([]);
+    const [groupTitle, setGroupTitle] = useState(''); 
 
-    const ENDPOINT = "https://hopurinn-dev.eu-north-1.elasticbeanstalk.com/"; // Replace with your server's address
+    const [socket, setSocket] = useState(null);
 
     useEffect(() => {
         const newSocket = socketIOClient(ENDPOINT);
         setSocket(newSocket);
     
-        newSocket.on('initialState', (initialParticipants) => {
-            setParticipants(initialParticipants);
+        newSocket.on('initialState', (data) => {
+            // Destructure to get participants and title
+            const { participants, title } = data;
+
+            // Update participants and group title based on server data
+            setParticipants(participants);
+            setGroupTitle(title);
         });
+
+
+        newSocket.on('groupTitle', (title) => {
+            setGroupTitle(title)
+        })
     
         newSocket.on('participantToggled', (data) => {
             setParticipants(prevParticipants =>
@@ -49,6 +56,7 @@ export default function ParticipantList() {
 
     return (
         <div>
+            <h2>{groupTitle}</h2>
             {participants.map((participant) => (
                 <ParticipantsCheckbox
                     key={participant.id}
@@ -56,6 +64,7 @@ export default function ParticipantList() {
                     participantId={participant.id}
                     isChecked={participant.isChecked}
                     onToggle={handleToggle}
+
                 />
             ))}
         </div>

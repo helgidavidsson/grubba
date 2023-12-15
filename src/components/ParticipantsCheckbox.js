@@ -5,7 +5,6 @@ export default function ParticipantsCheckbox({
     name
 }) 
 { 
-        console.log(isChecked)
         const handleCheckboxChange = () => {
             onToggle(participantId)   
         }

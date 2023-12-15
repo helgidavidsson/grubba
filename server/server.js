@@ -8,7 +8,7 @@ app.use(cors())
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "https://657b202f0aaeae0008f7c32d--regal-douhua-84bd69.netlify.app", // URL of your frontend application
+        origin: "http://localhost:3000", // URL of your frontend application
         methods: ["GET", "POST"],
         allowedHeaders: ["my-custom-header"],
         credentials: true
@@ -20,20 +20,19 @@ const io = socketIo(server, {
 
 
 
-const participants = [
-  { id: 0, isChecked: false, name: "Helgi Freyr" },
-  { id: 1, isChecked: false, name: "Davíð" },
-  { id: 2, isChecked: false, name: "Kristín Inga" },
-  { id: 3, isChecked: false, name: "Katrín Sól" },
-  // Add more participants as needed
-];
+let participants = [];
+
+let groupTitle = "Nafn hópar";
+
+
+
+
 
 
 
 io.on('connection', (socket) => {
     // Send the initial state to the newly connected client
-    socket.emit('initialState', participants);
-
+    socket.emit('initialState', { participants, title: groupTitle });
     socket.on('toggleParticipant', (data) => {
         // Update the participant's state
         const participant = participants.find(p => p.id === data.id);
@@ -41,14 +40,41 @@ io.on('connection', (socket) => {
             participant.isChecked = data.isChecked;
             io.emit('participantToggled', data); // Broadcast the update to all clients
         }
+    
+ 
+    
     });
 
+
+// Handle saveParticipants event
+socket.on('saveParticipants', (data) => {
+    console.log("Received data:", data); // Log the entire data object
+
+    const { rows, title } = data;
+    if (!rows) {
+        console.log("Error: 'rows' is undefined");
+        return; // Early return if rows is undefined
+    }
+    // Update the participants array with new data
+    participants = rows.map((row, index) => ({
+        id: index,
+        isChecked: false,
+        name: row.name,
+        email: row.email
+    }));
+    groupTitle = title;
+    console.log('Broadcasting new participants:', participants);
+
+    // Broadcast the updated participants to all clients
+    io.emit('initialState', { participants, title: groupTitle });
+});
+
     socket.on('disconnect', () => {
-        console.log('Client disc Socket.io + ReactJS Tutorial | Learn Socket.io For Beginners onnected');
+        console.log('Client disconnected');
     });
 });
 
-server.listen(80, () => {
-    console.log('Server is running on port 80');
+server.listen(3001, () => {
+    console.log('Server is running on port 3001');
 });
 
