@@ -1,0 +1,18 @@
+.header {
+    background-color:#475841;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.link {
+    text-decoration: none;
+    color: white;
+    font-size: 22px;
+    margin: 20px;
+}
+
+.link:hover {
+    text-decoration: underline;
+}

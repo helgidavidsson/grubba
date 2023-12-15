@@ -40,21 +40,34 @@ export default function GroupCreator({
 
     return(
         <div>
-            <h2>Nýr hópur</h2>
+            <h2>Breyta hópi</h2>
 
-            <form>
-            <div className={styles.nameContainer}>
-                    <label>Nafn hópar</label>
-                    <input
-                        className={styles.input}
-                        type='text'
-                        value={groupTitle}
-                        onChange={(e) => setGroupTitle(e.target.value)}
-                    />
-                </div>
+        <div className={styles.container}>
+
+            <div>
+                <h3>Upplýsingar</h3>
+                <div className={styles.infoContainer}>
+                        <label>Nafn hópar</label>
+                        <input
+                            className={styles.input}
+                            type='text'
+                            value={groupTitle}
+                            onChange={(e) => setGroupTitle(e.target.value)}
+                        />
+                    </div>
+
+                    <div className={styles.infoContainer}>
+                        <label>Lýsing á hópi</label>
+                        <textarea
+                        className={styles.inputLarge}>
+                            
+                        </textarea>
+                    </div>
+            </div>
+            
            
-
-            <h3>Bjóddu </h3>
+        <div>
+        <h3>Meðlimir </h3>
 
             <table className={styles.table}>
                 <thead>
@@ -93,22 +106,22 @@ export default function GroupCreator({
                             </td>
                         </tr>
                     ))}
-                 
+                
                 </tbody>
                 
-              
+            
             </table>
 
-            <label></label>
-
-         
-
-            </form>
             <button onClick={addNewRow}>Bæta við línu</button>
-
             <button onClick={handleSave}>Save</button>               
+
+        </div>
+           
+
           
 
         </div>
+        </div>
+       
     )
 }

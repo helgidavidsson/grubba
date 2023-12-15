@@ -1,4 +1,12 @@
-.nameContainer{
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+.infoContainer{
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -7,6 +15,12 @@
 
 .input {
     width: 200px;
+    margin: auto;
+}
+
+.inputLarge {
+    width: 200px;
+    height:200px;
     margin: auto;
 }
 

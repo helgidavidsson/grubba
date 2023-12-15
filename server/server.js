@@ -58,7 +58,7 @@ socket.on('saveParticipants', (data) => {
     // Update the participants array with new data
     participants = rows.map((row, index) => ({
         id: index,
-        isChecked: false,
+        isChecked: null,
         name: row.name,
         email: row.email
     }));

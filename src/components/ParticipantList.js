@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import ParticipantsCheckbox from "./ParticipantsCheckbox";
+import ParticipantsRadio from "./ParticipantsRadio";
 import socketIOClient from 'socket.io-client';
-
+import styles from './ParticipantsList.module.css'
 
 export default function ParticipantList({
     ENDPOINT,
@@ -57,8 +57,10 @@ export default function ParticipantList({
     return (
         <div>
             <h2>{groupTitle}</h2>
-            {participants.map((participant) => (
-                <ParticipantsCheckbox
+            
+            
+                    {participants.map((participant) => (
+                <ParticipantsRadio
                     key={participant.id}
                     name={participant.name}
                     participantId={participant.id}
@@ -67,6 +69,7 @@ export default function ParticipantList({
 
                 />
             ))}
+                    
         </div>
     );
 }
