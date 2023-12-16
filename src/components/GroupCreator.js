@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import styles from './GroupCreator.module.css'
 import socketIOClient from 'socket.io-client';
+import Subheader from './Subheader';
 
 export default function GroupCreator({
     ENDPOINT
@@ -46,7 +47,7 @@ export default function GroupCreator({
 
     return(
         <div>
-            <h2>Breyta hópi</h2>
+            <Subheader/>
 
         <div className={styles.container}>
 
