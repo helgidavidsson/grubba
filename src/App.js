@@ -19,7 +19,7 @@ function App() {
           <ParticipantList
             ENDPOINT={ENDPOINT}
           />} />
-        <Route path='/new-group' element={
+        <Route path='/stillingar' element={
           <GroupCreator 
             ENDPOINT={ENDPOINT}
           />} />

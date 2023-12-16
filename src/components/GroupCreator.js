@@ -8,7 +8,10 @@ export default function GroupCreator({
     const [rows, setRows] = useState([{ 
         name: '', email: '',
      }]);
+    
      const [groupTitle, setGroupTitle] = useState(''); 
+
+    const [ groupDescription, setGroupDescription ] = useState('')
 
     const [socket, setSocket] = useState(null);
 
@@ -18,11 +21,13 @@ export default function GroupCreator({
 
         newSocket.on('initialState', (data) => {
             // Destructure to get participants and title
-            const { participants, title } = data;
+            const { participants, title, description } = data;
 
             // Update rows and group title based on server data
             setRows(participants.map(participant => ({ name: participant.name, email: participant.email })));
+            
             setGroupTitle(title);
+            setGroupDescription(description)
         });
 
         return () => newSocket.disconnect();
@@ -33,10 +38,11 @@ export default function GroupCreator({
     };
 
     const handleSave = () => {
-        const dataToEmit = { rows, title: groupTitle };
+        const dataToEmit = { rows, title: groupTitle, description: groupDescription };
         console.log('Emitting data:', dataToEmit);
         socket.emit('saveParticipants', dataToEmit);
     };
+    console.log(groupDescription)
 
     return(
         <div>
@@ -59,7 +65,10 @@ export default function GroupCreator({
                     <div className={styles.infoContainer}>
                         <label>Lýsing á hópi</label>
                         <textarea
-                        className={styles.inputLarge}>
+                        className={styles.inputLarge}
+                        value={groupDescription}
+                        onChange={(e) => setGroupDescription(e.target.value)}
+                        >
                             
                         </textarea>
                     </div>

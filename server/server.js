@@ -15,34 +15,23 @@ const io = socketIo(server, {
     }
 });
 
-
-
-
-
-
 let participants = [];
 
 let groupTitle = "Nafn hópar";
 
-
-
-
-
+let groupDescription = "";
 
 
 io.on('connection', (socket) => {
     // Send the initial state to the newly connected client
-    socket.emit('initialState', { participants, title: groupTitle });
+    socket.emit('initialState', { participants, title: groupTitle, description: groupDescription });
     socket.on('toggleParticipant', (data) => {
         // Update the participant's state
         const participant = participants.find(p => p.id === data.id);
         if (participant) {
             participant.isChecked = data.isChecked;
             io.emit('participantToggled', data); // Broadcast the update to all clients
-        }
-    
- 
-    
+        }  
     });
 
 
@@ -50,7 +39,7 @@ io.on('connection', (socket) => {
 socket.on('saveParticipants', (data) => {
     console.log("Received data:", data); // Log the entire data object
 
-    const { rows, title } = data;
+    const { rows, title, description } = data;
     if (!rows) {
         console.log("Error: 'rows' is undefined");
         return; // Early return if rows is undefined
@@ -63,10 +52,11 @@ socket.on('saveParticipants', (data) => {
         email: row.email
     }));
     groupTitle = title;
+    groupDescription = description;
     console.log('Broadcasting new participants:', participants);
 
     // Broadcast the updated participants to all clients
-    io.emit('initialState', { participants, title: groupTitle });
+    io.emit('initialState', { participants, title: groupTitle, description: groupDescription });
 });
 
     socket.on('disconnect', () => {

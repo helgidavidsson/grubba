@@ -1,6 +1,6 @@
 .container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-evenly;
     margin-left: 100px;
     margin-right: 100px;
@@ -10,7 +10,6 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    
 }
 
 .input {

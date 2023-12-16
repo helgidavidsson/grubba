@@ -8,7 +8,7 @@ export default function Header() {
             <h1>Hópurinn</h1>
             <nav>
                 <Link className={styles.link} to="/">Listi</Link>
-                <Link className={styles.link} to="/new-group">Breyta hópi</Link>
+                <Link className={styles.link} to="/stillingar">Stillingar</Link>
             </nav>
         </header>
     )
