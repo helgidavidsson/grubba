@@ -42,6 +42,10 @@ socket.on('saveParticipants', (data) => {
     console.log("Received data:", data); // Log the entire data object
 
     const { rows, title, description, events } = data;
+    
+    groupTitle = title;
+    groupDescription = description;
+ 
     if (!rows) {
         console.log("Error: 'rows' is undefined");
         return; // Early return if rows is undefined
@@ -54,7 +58,6 @@ socket.on('saveParticipants', (data) => {
         email: row.email
     }));
 
-   
 
     console.log('Broadcasting new participants:', participants);
 
@@ -68,10 +71,18 @@ socket.on('saveParticipants', (data) => {
 });
 
     socket.emit('eventsUpdated', events); 
-    
+
     socket.on('addEvent', (newEvent) => {
         events.push(newEvent);
         io.emit('eventsUpdated', events); // Update all clients
+    });
+
+    socket.on('editEvent', (updatedEvent) => {
+        const index = events.findIndex(event => event.id === updatedEvent.id);
+        if (index !== -1) {
+            events[index] = updatedEvent;
+            io.emit('eventsUpdated', events);
+        }
     });
 
     socket.on('deleteEvent', (eventNameToDelete) => {

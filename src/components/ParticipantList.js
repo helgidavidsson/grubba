@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import ParticipantsRadio from "./ParticipantsRadio";
 import socketIOClient from 'socket.io-client';
 import styles from './ParticipantsList.module.css'
-import sortParticipants from '../utils/participantUtils'; 
+import sortParticipants from '../utils/sortParticipants'; 
+import { sortEvents } from "../utils/sortEvents";
 
 export default function ParticipantList({
     ENDPOINT,
@@ -27,7 +28,7 @@ export default function ParticipantList({
             setParticipants(sortParticipants(participants)); 
             setGroupTitle(title);
             setGroupDescription(description);
-            setEvents(events)
+            setEvents(sortEvents(events))
         });
 
 
@@ -68,9 +69,15 @@ export default function ParticipantList({
         // Emit the event to the server with the updated state
         const toggledParticipant = updatedParticipants.find(p => p.id === id);
         socket.emit('toggleParticipant', { id, isChecked: toggledParticipant.isChecked });
-        
-        
     };
+
+    const getNextEvent = () => {
+        const now = new Date();
+        return events.find(event => new Date(event.eventDate + event.eventTime))
+    }
+
+    const nextEvent = getNextEvent()
+    const upcomingEvents = events.filter(event => event !== nextEvent);
 
     return (
         <div>
@@ -78,7 +85,16 @@ export default function ParticipantList({
 
             <p>{groupDescription}</p>
             
-            <h3>Mætingarlisti</h3>
+           
+        
+            <h3>Næsti viðburður</h3>
+                {nextEvent ? (
+                    <p>{nextEvent.eventName} - {nextEvent.eventDate} at {nextEvent.eventTime}</p>
+                ) : (
+                    <p>Engir væntanlegir viðburðir.</p>
+                )}
+                
+                <h3>Mætingarlisti</h3>
                     {participants.map((participant) => (
                 <ParticipantsRadio
                     key={participant.id}
@@ -92,14 +108,17 @@ export default function ParticipantList({
 
 
             <h3>Væntanlegir viðburðir</h3>
-            <ul>
-        {events.map(event => (
-            <li key={event.eventName}>
-                {event.eventName} - {event.eventDate} at {event.eventTime}
-                {/* Optionally add delete button if needed */}
-            </li>
-        ))}
-    </ul>
+                    {upcomingEvents.length > 0 ? (
+                        <ul>
+                            {upcomingEvents.map(event => (
+                                <li key={event.eventName}>
+                                    {event.eventName} - {event.eventDate} at {event.eventTime}
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>Engir væntanlegir viðburðir.</p>
+                    )}  
 
                     
         </div>

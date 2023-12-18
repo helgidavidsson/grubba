@@ -92,7 +92,7 @@ export default function Participants({
             
             </table>
 
-            <button onClick={addNewRow}>Bæta við línu</button>
+            <button onClick={addNewRow}>Skrá nýjan meðlim</button>
 
         </div>
     )

@@ -12,6 +12,7 @@ export default function ParticipantsRadio({
         onToggle(participantId, newValue);
     }
 
+        const checkedValue = isChecked === null;
     const backgroundColorClass = isChecked === true ? styles.greenBackground : '';
     const lineThroughClass = isChecked === false ? styles.lineThrough : '';
 
