@@ -3,14 +3,20 @@
     color: white;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+}
+
+.logo {
+    text-align: left;
+    width: 200px;
 }
 
 .link {
+   
     text-decoration: none;
     color: white;
     font-size: 22px;
     margin: 20px;
+   
 }
 
 .link:hover {

@@ -1,83 +1,50 @@
-import { useState, useEffect } from 'react'
-import styles from './GroupCreator.module.css'
+import { useState, useEffect } from "react";
 import socketIOClient from 'socket.io-client';
-import Subheader from './Subheader';
+import styles from './GroupCreator.module.css'
 
-export default function GroupCreator({
-    ENDPOINT
+export default function Participants({
+    ENDPOINT,
+    rows,
+    setRows
 }) {
-    const [rows, setRows] = useState([{ 
-        name: '', email: '',
-     }]);
-    
-     const [groupTitle, setGroupTitle] = useState(''); 
-
-    const [ groupDescription, setGroupDescription ] = useState('')
 
     const [socket, setSocket] = useState(null);
 
+   
+    
+    
+    const addNewRow = () => {
+        setRows([...rows, { name: '', email: '' }]);
+    };
+
+    const deleteRow = (indexToDelete) => {
+        const memberName = rows[indexToDelete].name;
+        const confirmMessage = `Ertu viss um að þú viljir eyða ${memberName} úr hópnum?`;
+        
+        if (window.confirm(confirmMessage)) {
+            setRows(rows.filter((row, index) => index !== indexToDelete));
+        }
+    };
     useEffect(() => {
         const newSocket = socketIOClient(ENDPOINT);
         setSocket(newSocket);
 
         newSocket.on('initialState', (data) => {
             // Destructure to get participants and title
-            const { participants, title, description } = data;
+            const { participants } = data;
 
             // Update rows and group title based on server data
             setRows(participants.map(participant => ({ name: participant.name, email: participant.email })));
             
-            setGroupTitle(title);
-            setGroupDescription(description)
+        
         });
 
         return () => newSocket.disconnect();
     }, [ENDPOINT]);
 
-    const addNewRow = () => {
-        setRows([...rows, { name: '', email: '' }]);
-    };
-
-    const handleSave = () => {
-        const dataToEmit = { rows, title: groupTitle, description: groupDescription };
-        console.log('Emitting data:', dataToEmit);
-        socket.emit('saveParticipants', dataToEmit);
-    };
-    console.log(groupDescription)
-
     return(
         <div>
-            <Subheader/>
-
-        <div className={styles.container}>
-
-            <div>
-                <h3>Upplýsingar</h3>
-                <div className={styles.infoContainer}>
-                        <label>Nafn hópar</label>
-                        <input
-                            className={styles.input}
-                            type='text'
-                            value={groupTitle}
-                            onChange={(e) => setGroupTitle(e.target.value)}
-                        />
-                    </div>
-
-                    <div className={styles.infoContainer}>
-                        <label>Lýsing á hópi</label>
-                        <textarea
-                        className={styles.inputLarge}
-                        value={groupDescription}
-                        onChange={(e) => setGroupDescription(e.target.value)}
-                        >
-                            
-                        </textarea>
-                    </div>
-            </div>
-            
-           
-        <div>
-        <h3>Meðlimir </h3>
+        <h2>Meðlimir</h2>
 
             <table className={styles.table}>
                 <thead>
@@ -114,6 +81,9 @@ export default function GroupCreator({
                                     }}
                                 />
                             </td>
+
+                            <td>
+                            <button onClick={() => deleteRow(index)}>Eyða</button>                            </td>
                         </tr>
                     ))}
                 
@@ -123,15 +93,7 @@ export default function GroupCreator({
             </table>
 
             <button onClick={addNewRow}>Bæta við línu</button>
-            <button onClick={handleSave}>Save</button>               
 
         </div>
-           
-
-          
-
-        </div>
-        </div>
-       
     )
 }

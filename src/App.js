@@ -1,7 +1,7 @@
 import './App.css';
 import ParticipantList from './components/ParticipantList';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import GroupCreator from './components/GroupCreator';
+import GroupCreator from './components/group_creator/GroupCreator';
 import Header from './components/Header';
 
 

@@ -9,7 +9,8 @@ export default function ParticipantList({
 }) {
     const [participants, setParticipants] = useState([]);
     const [groupTitle, setGroupTitle] = useState(''); 
-    const [ groupDescription, setGroupDescription ] = useState('')
+    const [ groupDescription, setGroupDescription ] = useState('');
+    const [ events, setEvents ] = useState([]);
  
 
     const [socket, setSocket] = useState(null);
@@ -20,12 +21,13 @@ export default function ParticipantList({
     
         newSocket.on('initialState', (data) => {
             // Destructure to get participants and title
-            const { participants, title, description } = data;
+            const { participants, title, description, events } = data;
 
             // Update participants and group title based on server data
-            setParticipants(sortParticipants(participants)); // Sort participants here
+            setParticipants(sortParticipants(participants)); 
             setGroupTitle(title);
             setGroupDescription(description);
+            setEvents(events)
         });
 
 
@@ -46,6 +48,10 @@ export default function ParticipantList({
                 return sortParticipants(updated); // Sort participants after updating
             });
         });
+
+
+
+      
 
         return () => newSocket.disconnect();
     }, [ENDPOINT]);
@@ -83,6 +89,18 @@ export default function ParticipantList({
 
                 />
             ))}
+
+
+            <h3>Væntanlegir viðburðir</h3>
+            <ul>
+        {events.map(event => (
+            <li key={event.eventName}>
+                {event.eventName} - {event.eventDate} at {event.eventTime}
+                {/* Optionally add delete button if needed */}
+            </li>
+        ))}
+    </ul>
+
                     
         </div>
     );
