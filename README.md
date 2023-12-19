@@ -24,9 +24,9 @@ A React-based web application designed for efficient and interactive management 
 
 Clone the repository and install dependencies:
 
-`git clone https://github.com/helgidavidsson/hopurinn`
-`cd hopurinn`
-`npm install`
+`git clone https://github.com/helgidavidsson/hopurinn`\
+`cd hopurinn`\
+`npm install`\
 
 ### Running the Application
 
