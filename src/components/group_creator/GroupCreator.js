@@ -17,9 +17,9 @@ export default function GroupCreator({
 
 
     const [rows, setRows] = useState([{ 
-        name: '', email: '',
+        name: '', email: ''
      }]);
-    
+
   
 
     const [socket, setSocket] = useState(null);
@@ -28,23 +28,27 @@ export default function GroupCreator({
     useEffect(() => {
         const newSocket = socketIOClient(ENDPOINT);
         setSocket(newSocket);
-
-
+    
         newSocket.on('initialState', (data) => {
-            // Destructure to get participants and title
-            const {title, description } = data;
-            
+            console.log('Received initialState:', data);
+            const { title, description } = data;
+    
             setGroupTitle(title);
-            setGroupDescription(description)
+            setGroupDescription(description);
+            // Handle other parts of the state as needed
         });
-
+    
         return () => newSocket.disconnect();
     }, [ENDPOINT]);
-
+    
     
 
     const handleSave = () => {
-        const dataToEmit = { rows, title: groupTitle, description: groupDescription };
+        const dataToEmit = {
+            rows: rows, // Assuming 'rows' includes id, name, email, and isChecked
+            title: groupTitle,
+            description: groupDescription
+        };
         console.log('Emitting data:', dataToEmit);
         socket.emit('saveParticipants', dataToEmit);
     };

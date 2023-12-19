@@ -24,51 +24,55 @@ let groupDescription = "";
 let events = [];
 
 
+
+
+
+
+
 io.on('connection', (socket) => {
     // Send the initial state to the newly connected client
     socket.emit('initialState', { participants, title: groupTitle, description: groupDescription, events });
+    
     socket.on('toggleParticipant', (data) => {
-        // Update the participant's state
+        console.log(`Toggling participant ${data.id}, isChecked: ${data.isChecked}`);
         const participant = participants.find(p => p.id === data.id);
         if (participant) {
             participant.isChecked = data.isChecked;
-            io.emit('participantToggled', data); // Broadcast the update to all clients
-        }  
+            console.log(`Updated isChecked for participant ${data.id}: ${participant.isChecked}`);
+            io.emit('participantToggled', data);
+        }
     });
-
-
-// Handle saveParticipants event
-socket.on('saveParticipants', (data) => {
-    console.log("Received data:", data); // Log the entire data object
-
-    const { rows, title, description, events } = data;
     
-    groupTitle = title;
-    groupDescription = description;
- 
-    if (!rows) {
-        console.log("Error: 'rows' is undefined");
-        return; // Early return if rows is undefined
-    }
-    // Update the participants array with new data
-    participants = rows.map((row, index) => ({
-        id: index,
-        isChecked: null,
-        name: row.name,
-        email: row.email
-    }));
 
 
-    console.log('Broadcasting new participants:', participants);
-
-    // Broadcast the updated participants to all clients
-    io.emit('initialState', { 
-        participants, 
-        title: groupTitle, 
-        description: groupDescription,
-        events
+    socket.on('saveParticipants', (data) => {
+        const { rows, title, description, events } = data;
+    
+        groupTitle = title;
+        groupDescription = description;
+    
+    
+        // Update the participants array with new data
+        participants = rows.map(row => {
+    
+            return {
+                id: row.id,
+                isChecked: row.isChecked,
+                name: row.name,
+                email: row.email
+            };
+        });
+    
+        console.log('Broadcasting updated participants:', participants);
+        io.emit('initialState', { 
+            participants, 
+            title: groupTitle, 
+            description: groupDescription,
+            events
+        });
     });
-});
+    
+    
 
     socket.emit('eventsUpdated', events); 
 

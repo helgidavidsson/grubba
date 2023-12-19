@@ -57,19 +57,19 @@ export default function ParticipantList({
         return () => newSocket.disconnect();
     }, [ENDPOINT]);
 
-    const handleToggle = (id) => {
+    const handleToggle = (id, newIsChecked) => {
         const updatedParticipants = participants.map(p => {
             if (p.id === id) {
-                return { ...p, isChecked: !p.isChecked };
+                return { ...p, isChecked: newIsChecked };
             }
             return p;
         });
         setParticipants(updatedParticipants);
-
+    
         // Emit the event to the server with the updated state
-        const toggledParticipant = updatedParticipants.find(p => p.id === id);
-        socket.emit('toggleParticipant', { id, isChecked: toggledParticipant.isChecked });
+        socket.emit('toggleParticipant', { id, isChecked: newIsChecked });
     };
+    
 
     const getNextEvent = () => {
         const now = new Date();

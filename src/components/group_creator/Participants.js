@@ -11,20 +11,22 @@ export default function Participants({
     const [socket, setSocket] = useState(null);
 
    
+    const generateUniqueId = () => {
+        return Date.now().toString(36) + Math.random().toString(36).substring(2, 15);
+    };
     
     
     const addNewRow = () => {
-        setRows([...rows, { name: '', email: '' }]);
+        setRows([...rows, { id: generateUniqueId(), name: '', email: '' }]);
     };
-
-    const deleteRow = (indexToDelete) => {
-        const memberName = rows[indexToDelete].name;
-        const confirmMessage = `Ertu viss um að þú viljir eyða ${memberName} úr hópnum?`;
-        
-        if (window.confirm(confirmMessage)) {
-            setRows(rows.filter((row, index) => index !== indexToDelete));
+    
+    const deleteRow = (idToDelete) => {
+        const participantToDelete = rows.find(row => row.id === idToDelete);
+        if (participantToDelete && window.confirm(`Ertu viss um að þú vilt eyða ${participantToDelete.name} úr hópnum?`)) {
+            setRows(rows.filter(row => row.id !== idToDelete));
         }
     };
+    
     useEffect(() => {
         const newSocket = socketIOClient(ENDPOINT);
         setSocket(newSocket);
@@ -34,7 +36,13 @@ export default function Participants({
             const { participants } = data;
 
             // Update rows and group title based on server data
-            setRows(participants.map(participant => ({ name: participant.name, email: participant.email })));
+            setRows(participants.map(participant => ({ 
+                id: participant.id,
+                name: participant.name, 
+                email: participant.email,
+                isChecked: participant.isChecked
+            
+            })));
             
         
         });
@@ -57,7 +65,7 @@ export default function Participants({
                 <tbody>
 
                 {rows.map((row, index) => (
-                        <tr key={index}>
+                        <tr key={row.id}>
                             <td>{index + 1}</td>
                             <td>      
                                 <input 
@@ -83,7 +91,7 @@ export default function Participants({
                             </td>
 
                             <td>
-                            <button onClick={() => deleteRow(index)}>Eyða</button>                            </td>
+                            <button onClick={() => deleteRow(row.id)}>Eyða</button>                            </td>
                         </tr>
                     ))}
                 
