@@ -44,34 +44,35 @@ io.on('connection', (socket) => {
     });
     
 
+    // Add socket event for saving group information
+socket.on('saveInfo', (data) => {
+    const { title, description } = data;
 
-    socket.on('saveParticipants', (data) => {
-        const { rows, title, description, events } = data;
-    
-        groupTitle = title;
-        groupDescription = description;
-    
-    
-        // Update the participants array with new data
-        participants = rows.map(row => {
-    
-            return {
-                id: row.id,
-                isChecked: row.isChecked,
-                name: row.name,
-                email: row.email
-            };
-        });
-    
-        console.log('Broadcasting updated participants:', participants);
-        io.emit('initialState', { 
-            participants, 
-            title: groupTitle, 
-            description: groupDescription,
-            events
-        });
-    });
-    
+    groupTitle = title;
+    groupDescription = description;
+
+    console.log('Updated group information:', { groupTitle, groupDescription });
+    // Optionally, you can emit an event to confirm the update
+    io.emit('infoUpdated', { groupTitle, groupDescription });
+});
+
+
+socket.on('saveParticipants', (data) => {
+    const { rows } = data;
+
+    // Update the participants array with new data
+    participants = rows.map(row => ({
+        id: row.id || generateUniqueId(), // Generate a new ID only if it's missing
+        name: row.name,
+        email: row.email,
+        isChecked: row.isChecked
+    }));
+
+    console.log('Updated participants:', participants);
+    // Optionally, emit an event to confirm the update
+    io.emit('participantsUpdated', participants);
+});
+
     
 
     socket.emit('eventsUpdated', events); 

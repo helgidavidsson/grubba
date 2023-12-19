@@ -4,10 +4,10 @@ import styles from './GroupCreator.module.css'
 
 export default function Participants({
     ENDPOINT,
-    rows,
-    setRows
+   
 }) {
 
+    const [ rows, setRows ] = useState([])
     const [socket, setSocket] = useState(null);
 
    
@@ -49,6 +49,14 @@ export default function Participants({
 
         return () => newSocket.disconnect();
     }, [ENDPOINT]);
+
+    const handleSaveParticipants = () => {
+        const dataToEmit = {
+            rows: rows // Your rows array already includes id, name, email, and isChecked
+        };
+        console.log('Emitting participant data:', dataToEmit);
+        socket.emit('saveParticipants', dataToEmit);
+    };
 
     return(
         <div>
@@ -102,6 +110,7 @@ export default function Participants({
 
             <button onClick={addNewRow}>Skrá nýjan meðlim</button>
 
+            <button onClick={handleSaveParticipants}>Save Participants</button>
         </div>
     )
 }

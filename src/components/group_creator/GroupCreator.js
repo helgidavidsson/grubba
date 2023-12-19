@@ -5,92 +5,33 @@ import Info from './Info';
 import Participants from './Participants';
 import socketIOClient from 'socket.io-client';
 import Events from './Events';
+import { Outlet } from 'react-router-dom';
 
 
 export default function GroupCreator({
     ENDPOINT
 }) {
 
-    const [groupTitle, setGroupTitle] = useState(''); 
-
-    const [ groupDescription, setGroupDescription ] = useState('')
-
-
-    const [rows, setRows] = useState([{ 
-        name: '', email: ''
-     }]);
-
   
 
-    const [socket, setSocket] = useState(null);
+    
+
 
  
-    useEffect(() => {
-        const newSocket = socketIOClient(ENDPOINT);
-        setSocket(newSocket);
-    
-        newSocket.on('initialState', (data) => {
-            console.log('Received initialState:', data);
-            const { title, description } = data;
-    
-            setGroupTitle(title);
-            setGroupDescription(description);
-            // Handle other parts of the state as needed
-        });
-    
-        return () => newSocket.disconnect();
-    }, [ENDPOINT]);
-    
-    
-
-    const handleSave = () => {
-        const dataToEmit = {
-            rows: rows, // Assuming 'rows' includes id, name, email, and isChecked
-            title: groupTitle,
-            description: groupDescription
-        };
-        console.log('Emitting data:', dataToEmit);
-        socket.emit('saveParticipants', dataToEmit);
-    };
-    
     
 
     return(
         <div className={styles.flexContainer}>
         
-            <Sidebar
-               
-            />
+            <Sidebar/>               
 
 
         <div className={styles.mainContent}>
 
-            <Info
-                ENDPOINT={ENDPOINT}
-                setSocket={setSocket}
-                groupTitle={groupTitle}
-                setGroupTitle={setGroupTitle}
-                groupDescription={groupDescription}
-                setGroupDescription={setGroupDescription}
-                 
-            />
-            
-            
-           
-            <Participants
-                ENDPOINT={ENDPOINT}
-                rows={rows}
-                setRows={setRows}
-            />
-
-            
-            <Events
-                socket={socket}
-                setSocket={setSocket}
-            />
+            <Outlet/>
+        
 
           
-        <button onClick={handleSave}>Save</button>               
 
         </div>
 

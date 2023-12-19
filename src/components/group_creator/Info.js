@@ -1,17 +1,22 @@
 import styles from './GroupCreator.module.css'
 import { useState, useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
+import Sidebar from './Sidebar';
 export default function Info({
     ENDPOINT,
-    setSocket,
-    groupTitle,
-    setGroupTitle,
-    groupDescription,
-    setGroupDescription
+   
     
 }) {
+
+    const [groupTitle, setGroupTitle] = useState(''); 
+
+    const [ groupDescription, setGroupDescription ] = useState('')
+
   
-   
+
+  
+
+    const [socket, setSocket] = useState(null);
 
 
     useEffect(() => {
@@ -30,9 +35,22 @@ export default function Info({
         return () => newSocket.disconnect();
     }, [ENDPOINT]);
 
+
+    // Info.js
+    const handleSave = () => {
+        const dataToEmit = {
+            title: groupTitle,
+            description: groupDescription
+        };
+        console.log('Emitting data:', dataToEmit);
+        socket.emit('saveInfo', dataToEmit); // Emit the saveInfo event
+    };
+
+
   
     return(
         <div>
+         
                 <h2>Upplýsingar</h2>
                 <div className={styles.infoContainer}>
                         <label>Nafn hópar</label>
@@ -54,6 +72,9 @@ export default function Info({
                             
                         </textarea>
                     </div>
+
+                    <button onClick={handleSave}>Save</button>               
+
             </div>
     )
 }

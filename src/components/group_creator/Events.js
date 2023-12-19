@@ -6,33 +6,37 @@ import { sortEvents } from "../../utils/sortEvents";
 const ENDPOINT = "http://localhost:3001"; // Replace with your server's address
 
 export default function Events({
-    socket,
-    setSocket
+    
 }) {
     const [showAddEventForm, setShowAddEventForm] = useState(false);
     const [events, setEvents] = useState([]);
     const [eventToEdit, setEventToEdit] = useState(null);
+    const [ socket, setSocket ] = useState(null)
 
     useEffect(() => {
-        if (socket) {
-            const handleEventsUpdate = (updatedEvents) => {
-                setEvents(sortEvents(updatedEvents));
-            };
-    
-            socket.on('eventsUpdated', handleEventsUpdate);
-    
-            return () => {
-                socket.off('eventsUpdated', handleEventsUpdate);
-            };
-        }
-    }, [socket]);
+        const newSocket = socketIOClient(ENDPOINT);
+        setSocket(newSocket);
+
+        newSocket.on('eventsUpdated', (updatedEvents) => {
+            setEvents(sortEvents(updatedEvents));
+        });
+
+        return () => newSocket.disconnect();
+    }, []);
+
 
     const addOrEditEvent = (eventData) => {
+        // Assign a unique ID to the new event if it's being added
+        if (!eventToEdit) {
+            eventData.id = Date.now().toString(36) + Math.random().toString(36).substring(2);
+        }
+
         if (eventToEdit) {
-            socket.emit('editEvent', eventData);
+            socket.emit('editEvent', { ...eventData, id: eventToEdit.id });
         } else {
             socket.emit('addEvent', eventData);
         }
+
         setShowAddEventForm(false);
         setEventToEdit(null);
     };
