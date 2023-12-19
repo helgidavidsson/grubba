@@ -1,6 +1,6 @@
 # Hopurinn
 
-A React-based web application designed for efficient and interactive management of group events and participants. It offers a user-friendly platform for group leaders to organize events, track participant attendance, and communicate effectively with group members.
+A React-based web application designed for efficient and interactive management of group events and participants. It offers a user-friendly platform for group leaders to organize events, track participant attendance, and communicate effectively with group members. The backend is powered by `socket.io`, facilitating real-time updates and interactions.
 
 ## Current Features
 
@@ -26,12 +26,18 @@ Clone the repository and install dependencies:
 
 `git clone https://github.com/helgidavidsson/hopurinn`\
 `cd hopurinn`\
-`npm install`\
+`npm install`
 
 ### Running the Application
 
 Run the application locally:
 
+`npm start`
+
+For the backend server:
+
+`cd server`\
+`npm install`\
 `npm start`
 
 ## Contributing
