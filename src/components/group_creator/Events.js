@@ -19,7 +19,7 @@ export default function Events({
 
         newSocket.on('eventsUpdated', (updatedEvents) => {
             setEvents(sortEvents(updatedEvents));
-        });
+        });w
 
         return () => newSocket.disconnect();
     }, []);
@@ -53,37 +53,39 @@ export default function Events({
         }
     };
 
-    return (
-        <div>
-            <h2>Viðburðir</h2>
-            <button onClick={() => {
-                setShowAddEventForm(!showAddEventForm);
-                setEventToEdit(null);
-            }}>
-                Búa til viðburð
-            </button>
+    // ...
+return (
+    <div>
+        <h2>Viðburðir</h2>
+        <button onClick={() => {
+            setShowAddEventForm(!showAddEventForm);
+            setEventToEdit(null);
+        }}>
+            Búa til viðburð
+        </button>
 
-            {showAddEventForm && (
-                <EventAdd 
-                    eventToEdit={eventToEdit}
-                    onSave={addOrEditEvent} 
-                    onCancel={() => {
-                        setShowAddEventForm(false);
-                        setEventToEdit(null);
-                    }} 
-                />
-            )}
+        {showAddEventForm && (
+            <EventAdd 
+                eventToEdit={eventToEdit}
+                onSave={addOrEditEvent} 
+                onCancel={() => {
+                    setShowAddEventForm(false);
+                    setEventToEdit(null);
+                }} 
+            />
+        )}
 
-            <h3>Væntanlegir viðburðir</h3>
-            <ul>
-                {events.map(event => (
-                    <li key={event.eventName}>
-                        {event.eventName} - {event.eventDate} at {event.eventTime}
-                        <button onClick={() => editEvent(event)}>Breyta</button>
-                        <button onClick={() => deleteEvent(event.eventName)}>Eyða</button>
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+        
+        <ul>
+            {events.map(event => (
+                <li key={event.id}> {/* Use event.id as key */}
+                    {event.eventName} - {event.eventDate} at {event.eventTime} {event.eventLocation}
+                    <button onClick={() => editEvent(event)}>Breyta</button>
+                    <button onClick={() => deleteEvent(event.eventName)}>Eyða</button>
+                </li>
+            ))}
+        </ul>
+    </div>
+);
+
 }

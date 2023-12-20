@@ -60,40 +60,109 @@ socket.on('saveInfo', (data) => {
 socket.on('saveParticipants', (data) => {
     const { rows } = data;
 
-    // Update the participants array with new data
-    participants = rows.map(row => ({
-        id: row.id || generateUniqueId(), // Generate a new ID only if it's missing
-        name: row.name,
-        email: row.email,
-        isChecked: row.isChecked
-    }));
+    // Create a map of existing participants by ID for easy access
+    const existingParticipantsMap = new Map(participants.map(p => [p.id, p]));
+
+    // Update the participants array with new data, preserving comments
+    participants = rows.map(row => {
+        const existingParticipant = existingParticipantsMap.get(row.id);
+        return {
+            id: row.id,
+            name: row.name,
+            email: row.email,
+            isChecked: row.isChecked,
+            comments: existingParticipant ? existingParticipant.comments : [] // Preserve existing comments
+        };
+    });
 
     console.log('Updated participants:', participants);
-    // Optionally, emit an event to confirm the update
     io.emit('participantsUpdated', participants);
 });
 
-    
+
+socket.on('saveComment', (data) => {
+    const { participantId, comment } = data;
+    const participant = participants.find(p => p.id === participantId);
+
+    if (participant) {
+        // Initialize comments array if it doesn't exist
+        if (!participant.comments) {
+            participant.comments = [];
+        }
+
+        // Now you can safely push the comment
+        participant.comments.push(comment);
+        io.emit('commentsUpdated', participants); // Update all clients
+    }
+});
 
     socket.emit('eventsUpdated', events); 
 
+    // Helper function to generate repeated event dates
+
+    
+
+
     socket.on('addEvent', (newEvent) => {
-        events.push(newEvent);
-        io.emit('eventsUpdated', events); // Update all clients
+        // The newEvent object already contains all the necessary information, 
+        // including dates for repeated events.
+    
+        // Check if the event ID is provided, if not, generate a new ID.
+        const eventID = newEvent.id || Date.now().toString(36) + Math.random().toString(36).substring(2);
+    
+        // Push the event to the events array.
+        events.push({ ...newEvent, id: eventID });
+    
+        // Emit the updated events to all clients.
+        io.emit('eventsUpdated', events);
     });
+    
 
     socket.on('editEvent', (updatedEvent) => {
-        const index = events.findIndex(event => event.id === updatedEvent.id);
-        if (index !== -1) {
-            events[index] = updatedEvent;
-            io.emit('eventsUpdated', events);
+        // Check if the event is part of a repeated series
+        const isRepeated = updatedEvent.eventRepeat && updatedEvent.eventRepeat !== 'none';
+        console.log('isRepeated:', isRepeated)
+        if (isRepeated) {
+            // Depending on the edit scope, handle the update differently
+            if (updatedEvent.editScope === 'allEvents') {
+                // Update all events in the series
+                events = events.map(event => {
+                    return event.id === updatedEvent.id ? { ...event, ...updatedEvent } : event;
+                });
+            } else if (updatedEvent.editScope === 'thisAndFutureEvents') {
+                // Find the index of the current event being edited
+                const currentIndex = events.findIndex(event => event.id === updatedEvent.id);
+    
+                // Update this and all future events in the series
+                for (let i = currentIndex; i < events.length; i++) {
+                    if (events[i].id === updatedEvent.id) {
+                        events[i] = { ...events[i], ...updatedEvent };
+                    }
+                }
+            } else {
+                // 'thisEvent' - Update only this particular event
+                const index = events.findIndex(event => event.id === updatedEvent.id);
+                if (index !== -1) {
+                    events[index] = { ...events[index], ...updatedEvent };
+                }
+            }
+        } else {
+            // Handle single or non-repeated event
+            const index = events.findIndex(event => event.id === updatedEvent.id);
+            if (index !== -1) {
+                events[index] = updatedEvent;
+            }
         }
+    
+        io.emit('eventsUpdated', events);
     });
-
+    
     socket.on('deleteEvent', (eventNameToDelete) => {
         events = events.filter(event => event.eventName !== eventNameToDelete);
         io.emit('eventsUpdated', events); // Update all clients
     });
+
+
 
     socket.on('disconnect', () => {
         console.log('Client disconnected');

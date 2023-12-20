@@ -89,7 +89,7 @@ export default function ParticipantList({
         
             <h3>Næsti viðburður</h3>
                 {nextEvent ? (
-                    <p>{nextEvent.eventName} - {nextEvent.eventDate} at {nextEvent.eventTime}</p>
+                    <p>{nextEvent.eventName} - {nextEvent.eventDate} at {nextEvent.eventTime} {nextEvent.eventLocation}</p>
                 ) : (
                     <p>Engir væntanlegir viðburðir.</p>
                 )}
@@ -97,6 +97,7 @@ export default function ParticipantList({
                 <h3>Mætingarlisti</h3>
                     {participants.map((participant) => (
                 <ParticipantsRadio
+                    ENDPOINT={ENDPOINT}
                     key={participant.id}
                     name={participant.name}
                     participantId={participant.id}
@@ -112,7 +113,7 @@ export default function ParticipantList({
                         <ul>
                             {upcomingEvents.map(event => (
                                 <li key={event.eventName}>
-                                    {event.eventName} - {event.eventDate} at {event.eventTime}
+                                    {event.eventName} - {event.eventDate} at {event.eventTime} {event.eventLocation}
                                 </li>
                             ))}
                         </ul>
