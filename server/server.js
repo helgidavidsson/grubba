@@ -23,12 +23,6 @@ let groupDescription = "";
 
 let events = [];
 
-
-
-
-
-
-
 io.on('connection', (socket) => {
     // Send the initial state to the newly connected client
     socket.emit('initialState', { participants, title: groupTitle, description: groupDescription, events });
@@ -100,9 +94,6 @@ socket.on('saveComment', (data) => {
 
     // Helper function to generate repeated event dates
 
-    
-
-
     socket.on('addEvent', (newEvent) => {
         // The newEvent object already contains all the necessary information, 
         // including dates for repeated events.
@@ -116,46 +107,46 @@ socket.on('saveComment', (data) => {
         // Emit the updated events to all clients.
         io.emit('eventsUpdated', events);
     });
-    
 
     socket.on('editEvent', (updatedEvent) => {
-        // Check if the event is part of a repeated series
         const isRepeated = updatedEvent.eventRepeat && updatedEvent.eventRepeat !== 'none';
-        console.log('isRepeated:', isRepeated)
+        console.log('isRepeated:', isRepeated);
+    
         if (isRepeated) {
-            // Depending on the edit scope, handle the update differently
             if (updatedEvent.editScope === 'allEvents') {
-                // Update all events in the series
-                events = events.map(event => {
+                console.log('all events');
+                 events = events.map(event => {
                     return event.id === updatedEvent.id ? { ...event, ...updatedEvent } : event;
                 });
             } else if (updatedEvent.editScope === 'thisAndFutureEvents') {
-                // Find the index of the current event being edited
-                const currentIndex = events.findIndex(event => event.id === updatedEvent.id);
+                console.log('this event and future');
+                 // Find the index of the current event being edited
+                 const currentIndex = events.findIndex(event => event.id === updatedEvent.id);
     
-                // Update this and all future events in the series
-                for (let i = currentIndex; i < events.length; i++) {
-                    if (events[i].id === updatedEvent.id) {
-                        events[i] = { ...events[i], ...updatedEvent };
-                    }
-                }
-            } else {
-                // 'thisEvent' - Update only this particular event
-                const index = events.findIndex(event => event.id === updatedEvent.id);
-                if (index !== -1) {
-                    events[index] = { ...events[index], ...updatedEvent };
-                }
+                 // Update this and all future events in the series
+                 for (let i = currentIndex; i < events.length; i++) {
+                     if (events[i].id === updatedEvent.id) {
+                         events[i] = { ...events[i], ...updatedEvent };
+                     }
+                 }
             }
-        } else {
-            // Handle single or non-repeated event
+        }
+        
+        if (updatedEvent.editScope === 'thisEvent') {
+            console.log('this event');
             const index = events.findIndex(event => event.id === updatedEvent.id);
             if (index !== -1) {
-                events[index] = updatedEvent;
+                const updatedEventData = { ...events[index], ...updatedEvent };
+                updatedEventData.eventDate = events[index].eventDate;
+                events[index] = updatedEventData;
             }
         }
     
         io.emit('eventsUpdated', events);
     });
+    
+
+    
     
     socket.on('deleteEvent', (eventNameToDelete) => {
         events = events.filter(event => event.eventName !== eventNameToDelete);

@@ -1,0 +1,33 @@
+.eventCard {
+    background-color: #e6e8e6;
+    padding: 20px;
+    width: fit-content;
+    border-radius: 20px;
+    margin: 0 auto;
+}
+
+.nextEventName {
+    font-size: 32px;
+    text-align: left;
+    margin: 20px;
+}
+
+.nextEventDate {
+    text-align: left;
+    margin: 20px;
+}
+
+.nextEventTime {
+    text-align: left;
+    margin: 20px;
+}
+
+.nextEventLocation{
+    text-align: left;
+    margin: 20px;
+}
+
+.h3 {
+    text-align: left;
+    margin: 20px;
+}

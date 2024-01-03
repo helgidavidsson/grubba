@@ -10,7 +10,7 @@ export default function ParticipantsRadio({
     name
 }) {
 
-
+    console.log(isChecked)
     const handleRadioChange = (event) => {
         const newValue = event.target.value === 'yes';
         onToggle(participantId, newValue);
@@ -47,6 +47,7 @@ export default function ParticipantsRadio({
                 ENDPOINT={ENDPOINT}
                 name={name}
                 participantId={participantId}
+                isChecked={isChecked}
                 />
 
            

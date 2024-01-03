@@ -79,6 +79,12 @@ export default function ParticipantList({
     const nextEvent = getNextEvent()
     const upcomingEvents = events.filter(event => event !== nextEvent);
 
+    const formatDate = (dateString) => {
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        return new Intl.DateTimeFormat('is-IS', options).format(new Date(dateString));
+    };
+    
+
     return (
         <div>
             <h2>{groupTitle}</h2>
@@ -89,23 +95,51 @@ export default function ParticipantList({
         
             <h3>Næsti viðburður</h3>
                 {nextEvent ? (
-                    <p>{nextEvent.eventName} - {nextEvent.eventDate} at {nextEvent.eventTime} {nextEvent.eventLocation}</p>
+                    <>
+                    <div className={styles.eventCard}>
+                        <h4 
+                            className={styles.nextEventName}>
+                                {nextEvent.eventName}
+                        </h4>
+                       
+                        <p 
+                            className={styles.nextEventDate}>
+                               Dagsetning: <b>{formatDate(nextEvent.eventDate)}</b>
+                        </p>
+                        
+                        <p 
+                            className={styles.nextEventTime}>
+                                Tími: <b>{nextEvent.eventTime}</b>
+                        </p>
+
+                        <p className={styles.nextEventLocation}>
+                                Staðsetning: <b>{nextEvent.eventLocation}</b>
+                        </p>
+
+                        <h3 className={styles.h3}>Mætingarlisti</h3>
+                          
+                            {participants.map((participant) => (
+                        
+                        <ParticipantsRadio
+                            ENDPOINT={ENDPOINT}
+                            key={participant.id}
+                            name={participant.name}
+                            participantId={participant.id}
+                            isChecked={participant.isChecked}
+                            onToggle={handleToggle}
+                        />
+                    ))}
+
+                        </div>
+
+                          
+               
+                    </>
+                   
                 ) : (
                     <p>Engir væntanlegir viðburðir.</p>
                 )}
-                
-                <h3>Mætingarlisti</h3>
-                    {participants.map((participant) => (
-                <ParticipantsRadio
-                    ENDPOINT={ENDPOINT}
-                    key={participant.id}
-                    name={participant.name}
-                    participantId={participant.id}
-                    isChecked={participant.isChecked}
-                    onToggle={handleToggle}
-
-                />
-            ))}
+              
 
 
             <h3>Væntanlegir viðburðir</h3>

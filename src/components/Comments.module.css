@@ -13,3 +13,15 @@
 .dateText {
     font-size: 12px;
 }
+
+.button {
+    all: unset;
+    display: flex;
+    align-items: center;
+
+}
+
+.button:hover {
+    background-color: white;
+    border-radius: 30px;
+}

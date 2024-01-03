@@ -19,7 +19,7 @@ export default function Events({
 
         newSocket.on('eventsUpdated', (updatedEvents) => {
             setEvents(sortEvents(updatedEvents));
-        });w
+        });
 
         return () => newSocket.disconnect();
     }, []);

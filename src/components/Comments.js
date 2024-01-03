@@ -5,6 +5,7 @@ export default function Comments({
     ENDPOINT,
     name,
     participantId,
+    isChecked
     
 }) {
 
@@ -62,11 +63,18 @@ export default function Comments({
 
     return(
         <div>
-            <button onClick={() => setShowPopup(true)}><img src="/assets/comment-icon.svg" alt="Comment Icon" /></button>
+            <button 
+                className={styles.button}
+                onClick={() => setShowPopup(true)}>
+                    <img 
+                        src="/assets/comment-icon.svg" 
+                        alt="Comment Icon" />
+            </button>
 
             {showPopup && (
                 <div className={styles.commentPopUp}>
-                    <h4>{name} mætir</h4>
+                    <h4>{name}</h4>
+                    <p>{isChecked == true ? 'mætir' : 'mætir ekki'}</p>
                     {comments.map((comment, index) => (
                         <p key={index}>
                             <small className={styles.dateText}>{comment.dateTime}</small> - {comment.text}

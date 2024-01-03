@@ -1,19 +1,33 @@
 .radioContainer {
     display: flex;
     justify-content: center;
+    margin: 3px 20px 3px 20px;
+    width: fit-content;
+    
 }
 
 .radioLabel {
+    display: flex;
+    align-items: center;
     min-width: 200px;
     text-align: start;
     padding: 5px;
+    border-radius: 20px 0px 0px 20px;
+    border-right: none;
+    padding-left: 10px;
+
     
 
     
 }
 
 .radioGroup {
+    display: flex;
+    align-items: center;
     padding: 5px;
+    border-left: none;
+    border-radius: 0px 20px 20px 0px;
+    padding-right: 10px;
 
 
 }

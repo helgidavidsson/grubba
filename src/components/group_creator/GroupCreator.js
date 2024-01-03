@@ -12,14 +12,6 @@ export default function GroupCreator({
     ENDPOINT
 }) {
 
-  
-
-    
-
-
- 
-    
-
     return(
         <div className={styles.flexContainer}>
         
