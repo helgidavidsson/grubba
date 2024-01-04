@@ -1,7 +1,6 @@
 import styles from './GroupCreator.module.css'
 import { useState, useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
-import Sidebar from './Sidebar';
 export default function Info({
     ENDPOINT,
    

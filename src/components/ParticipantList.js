@@ -72,7 +72,6 @@ export default function ParticipantList({
     
 
     const getNextEvent = () => {
-        const now = new Date();
         return events.find(event => new Date(event.eventDate + event.eventTime))
     }
 
@@ -83,6 +82,30 @@ export default function ParticipantList({
         const options = { day: 'numeric', month: 'long', year: 'numeric' };
         return new Intl.DateTimeFormat('is-IS', options).format(new Date(dateString));
     };
+
+    const calculateTimeLeft = (eventDate) => {
+        const now = new Date();
+        const eventDateTime = new Date(eventDate);
+        const difference = eventDateTime - now;
+    
+        const minutes = Math.floor(difference / (1000 * 60));
+        const hours = Math.floor(difference / (1000 * 60 * 60));
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const years = Math.floor(days / 365);
+    
+        if (years > 1) {
+            return `${years} ár`;
+        } else if (days > 1) {
+            return `${days} daga`;
+        } else if (hours > 1) {
+            return `${hours} klukkutíma`;
+        } else if (minutes > 1) {
+            return `${minutes} mínútur`;
+        } else {
+            return 'Byrjar fljótlega';
+        }
+    };
+    
     
 
     return (
@@ -93,10 +116,12 @@ export default function ParticipantList({
             
            
         
-            <h3>Næsti viðburður</h3>
                 {nextEvent ? (
                     <>
+
                     <div className={styles.eventCard}>
+                    <p className={styles.timeLeft}>Næsti viðburður hefst eftir <b>{calculateTimeLeft(nextEvent.eventDate)}</b>...</p>
+
                         <h4 
                             className={styles.nextEventName}>
                                 {nextEvent.eventName}

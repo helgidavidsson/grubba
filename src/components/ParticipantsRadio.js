@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Comments from './Comments';
 import styles from './ParticipantsRadio.module.css';
 

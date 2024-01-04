@@ -73,8 +73,8 @@ export default function Comments({
 
             {showPopup && (
                 <div className={styles.commentPopUp}>
-                    <h4>{name}</h4>
-                    <p>{isChecked == true ? 'mætir' : 'mætir ekki'}</p>
+                    <p><b>{name}</b> {isChecked === true ? 'mætir' : isChecked === false ? 'mætir ekki' : 'hefur ekki merkt við'}</p>
+                    <p></p>
                     {comments.map((comment, index) => (
                         <p key={index}>
                             <small className={styles.dateText}>{comment.dateTime}</small> - {comment.text}

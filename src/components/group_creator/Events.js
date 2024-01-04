@@ -5,9 +5,7 @@ import { sortEvents } from "../../utils/sortEvents";
 
 const ENDPOINT = "http://localhost:3001"; // Replace with your server's address
 
-export default function Events({
-    
-}) {
+export default function Events() {
     const [showAddEventForm, setShowAddEventForm] = useState(false);
     const [events, setEvents] = useState([]);
     const [eventToEdit, setEventToEdit] = useState(null);
