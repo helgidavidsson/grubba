@@ -2,7 +2,7 @@
     background-color:#183D3D;
     color: white;
     display: flex;
-    align-items: center;
+    justify-content: center;
 }
 
 .logo {
@@ -10,15 +10,3 @@
     width: 200px;
 }
 
-.link {
-   
-    text-decoration: none;
-    color: white;
-    font-size: 22px;
-    margin: 20px;
-   
-}
-
-.link:hover {
-    text-decoration: underline;
-}

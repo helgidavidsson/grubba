@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
 import EventAdd from "./EventAdd";
 import { sortEvents } from "../../utils/sortEvents";
+import DeleteConfirmationDialog from "./DeleteConfirmation";
 
 const ENDPOINT = "http://localhost:3001"; // Replace with your server's address
 
@@ -44,12 +45,39 @@ export default function Events() {
         setShowAddEventForm(true);
     };
 
-    const deleteEvent = (eventNameToDelete) => {
-        const isConfirmed = window.confirm(`Ertu viss um að þú viljir eyða viðburði: ${eventNameToDelete}?`);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [eventToDelete, setEventToDelete] = useState(null);
+
+    const showDeleteConfirmation = (event) => {
+        setEventToDelete(event);
+        setShowDeleteDialog(true);
+};
+
+const deleteEvent = (event) => {
+    console.log()
+    // Check if the event is repeated
+    if (event.eventRepeat && event.eventRepeat !== 'none') {
+        showDeleteConfirmation(event);
+        console.log("Deleting event:", event); // Check the event details
+    } else {
+        // Use the traditional confirmation for non-repeated events
+        const isConfirmed = window.confirm(`Ertu viss um að þú viljir eyða viðburði: "${event.eventName}"?`);
         if (isConfirmed) {
-            socket.emit('deleteEvent', eventNameToDelete);
+            console.log(event.id)
+            socket.emit('deleteEvent', { eventId: event.id, scope: 'thisEvent' });
         }
-    };
+    }
+};
+
+
+const handleDeleteConfirmation = (eventToDelete, deletionScope) => {
+    socket.emit('deleteEvent', {
+        eventName: eventToDelete.eventName,
+        eventId: eventToDelete.id,
+        scope: deletionScope
+    });
+};
+
 
     // ...
 return (
@@ -73,13 +101,28 @@ return (
             />
         )}
 
+     
+
+        {showDeleteDialog && (
+            <DeleteConfirmationDialog
+                eventToDelete={eventToDelete}
+                onDeleteConfirmed={handleDeleteConfirmation}
+                onCancel={() => {
+                    setShowDeleteDialog(false)
+                    setEventToDelete(null)
+                }}
+                setShowDeleteDialog={setShowDeleteDialog}
+            />
+        )}
+
         
         <ul>
             {events.map(event => (
                 <li key={event.id}> {/* Use event.id as key */}
                     {event.eventName} - {event.eventDate} at {event.eventTime} {event.eventLocation}
                     <button onClick={() => editEvent(event)}>Breyta</button>
-                    <button onClick={() => deleteEvent(event.eventName)}>Eyða</button>
+                    <button onClick={() => deleteEvent(event)}>Eyða</button>
+
                 </li>
             ))}
         </ul>

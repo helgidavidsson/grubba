@@ -109,50 +109,33 @@ socket.on('saveComment', (data) => {
     });
 
     socket.on('editEvent', (updatedEvent) => {
-        const isRepeated = updatedEvent.eventRepeat && updatedEvent.eventRepeat !== 'none';
-        console.log('isRepeated:', isRepeated);
+        // Find the index of the event to be updated
+        const index = events.findIndex(event => event.id === updatedEvent.id);
     
-        if (isRepeated) {
-            if (updatedEvent.editScope === 'allEvents') {
-                console.log('all events');
-                 events = events.map(event => {
-                    return event.id === updatedEvent.id ? { ...event, ...updatedEvent } : event;
-                });
-            } else if (updatedEvent.editScope === 'thisAndFutureEvents') {
-                console.log('this event and future');
-                 // Find the index of the current event being edited
-                 const currentIndex = events.findIndex(event => event.id === updatedEvent.id);
-    
-                 // Update this and all future events in the series
-                 for (let i = currentIndex; i < events.length; i++) {
-                     if (events[i].id === updatedEvent.id) {
-                         events[i] = { ...events[i], ...updatedEvent };
-                     }
-                 }
-            }
-        }
-        
-        if (updatedEvent.editScope === 'thisEvent') {
-            console.log('this event');
-            const index = events.findIndex(event => event.id === updatedEvent.id);
-            if (index !== -1) {
-                const updatedEventData = { ...events[index], ...updatedEvent };
-                updatedEventData.eventDate = events[index].eventDate;
-                events[index] = updatedEventData;
-            }
+        // If the event is found, update it
+        if (index !== -1) {
+            events[index] = { ...events[index], ...updatedEvent };
         }
     
+        // Emit the updated events to all clients
         io.emit('eventsUpdated', events);
     });
     
+    
+    
 
-    
-    
-    socket.on('deleteEvent', (eventNameToDelete) => {
-        events = events.filter(event => event.eventName !== eventNameToDelete);
-        io.emit('eventsUpdated', events); // Update all clients
+    socket.on('deleteEvent', (data) => {
+        const { eventName, eventId, scope } = data;
+        if (scope === 'allEvents') {
+            events = events.filter(event => event.eventName !== eventName);
+        } else {
+            console.log("Received event ID for deletion:", eventId);
+            events = events.filter(event => event.id !== eventId); // Use eventId to identify the event
+        }
+        io.emit('eventsUpdated', events);
     });
-
+    
+    
 
 
     socket.on('disconnect', () => {

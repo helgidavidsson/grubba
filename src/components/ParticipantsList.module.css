@@ -1,3 +1,13 @@
+.layout {
+    display: flex;
+    
+}
+
+.mainContent {
+   flex: 1;
+   
+}
+
 .eventCard {
     background-color: #e6e8e6;
     padding: 20px;

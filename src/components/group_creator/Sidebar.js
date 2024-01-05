@@ -7,6 +7,8 @@ export default function Sidebar() {
             <Link className={styles.link} to="/stillingar/upplysingar">Grunnupplýsingar</Link>
             <Link className={styles.link} to="/stillingar/medlimir">Meðlimir</Link>
             <Link className={styles.link} to="/stillingar/vidburdir">Viðburðir</Link>
+            <Link className={styles.link} to="/stillingar/tilkynningar">Tilkynningar</Link>
+
             </nav>
             
         </div>

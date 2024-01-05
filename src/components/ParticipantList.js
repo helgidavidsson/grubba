@@ -4,6 +4,8 @@ import socketIOClient from 'socket.io-client';
 import styles from './ParticipantsList.module.css'
 import sortParticipants from '../utils/sortParticipants'; 
 import { sortEvents } from "../utils/sortEvents";
+import Sidebar from "./Sidebar";
+import SubHeader from "./SubHeader";
 
 export default function ParticipantList({
     ENDPOINT,
@@ -83,53 +85,69 @@ export default function ParticipantList({
         return new Intl.DateTimeFormat('is-IS', options).format(new Date(dateString));
     };
 
-    const calculateTimeLeft = (eventDate) => {
-        const now = new Date();
-        const eventDateTime = new Date(eventDate);
-        const difference = eventDateTime - now;
+    const calculateTimeLeft = (eventDateTime) => {
+        const currentTime = new Date();
+        const eventTime = new Date(eventDateTime);
     
-        const minutes = Math.floor(difference / (1000 * 60));
-        const hours = Math.floor(difference / (1000 * 60 * 60));
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const years = Math.floor(days / 365);
+        let difference = eventTime - currentTime;
     
-        if (years > 1) {
-            return `${years} ár`;
-        } else if (days > 1) {
-            return `${days} daga`;
-        } else if (hours > 1) {
-            return `${hours} klukkutíma`;
-        } else if (minutes > 1) {
-            return `${minutes} mínútur`;
-        } else {
-            return 'Byrjar fljótlega';
+        // Check if the event has already started
+        if (difference <= 0) {
+            return null;
         }
-    };
     
+        // Calculate time left in different units
+        const minutes = Math.floor((difference / (1000 * 60)) % 60);
+        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24) % 30);
+        const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30) % 12);
+        const years = Math.floor(difference / (1000 * 60 * 60 * 24 * 365));
+    
+        // Construct the time left string
+        let timeLeftString = '';
+        if (years > 0) timeLeftString += `${years} ár `;
+        if (months > 0) timeLeftString += `${months} mánuði `;
+        if (days > 0) timeLeftString += `${days} daga `;
+        if (hours > 0) timeLeftString += `${hours} klukkutíma `;
+        if (minutes > 0) timeLeftString += `${minutes} mínútu`;
+    
+        return timeLeftString.trim();
+    };
     
 
     return (
         <div>
-            <h2>{groupTitle}</h2>
+            <SubHeader/>
 
-            <p>{groupDescription}</p>
+<div className={styles.layout}>
+            <Sidebar
+                title={groupTitle}
+                description={groupDescription}
+            />
+            <div className={styles.mainContent}>
             
-           
-        
+
+
+
                 {nextEvent ? (
                     <>
 
                     <div className={styles.eventCard}>
-                    <p className={styles.timeLeft}>Næsti viðburður hefst eftir <b>{calculateTimeLeft(nextEvent.eventDate)}</b>...</p>
-
+                    {calculateTimeLeft(`${nextEvent.eventDate}T${nextEvent.eventTime}`) === null ? (
+                <p className={styles.timeLeft}><b>Í gangi núna...</b></p>
+            ) : (
+                <p className={styles.timeLeft}>
+                    Næsti viðburður hefst eftir <b>{calculateTimeLeft(`${nextEvent.eventDate}T${nextEvent.eventTime}`)}</b>...
+                </p>
+            )}
                         <h4 
                             className={styles.nextEventName}>
                                 {nextEvent.eventName}
                         </h4>
-                       
+                    
                         <p 
                             className={styles.nextEventDate}>
-                               Dagsetning: <b>{formatDate(nextEvent.eventDate)}</b>
+                            Dagsetning: <b>{formatDate(nextEvent.eventDate)}</b>
                         </p>
                         
                         <p 
@@ -142,7 +160,7 @@ export default function ParticipantList({
                         </p>
 
                         <h3 className={styles.h3}>Mætingarlisti</h3>
-                          
+                        
                             {participants.map((participant) => (
                         
                         <ParticipantsRadio
@@ -157,14 +175,14 @@ export default function ParticipantList({
 
                         </div>
 
-                          
-               
+                        
+            
                     </>
-                   
+                
                 ) : (
                     <p>Engir væntanlegir viðburðir.</p>
                 )}
-              
+            
 
 
             <h3>Væntanlegir viðburðir</h3>
@@ -179,8 +197,12 @@ export default function ParticipantList({
                     ) : (
                         <p>Engir væntanlegir viðburðir.</p>
                     )}  
-
+                        </div>
                     
+
+                                
+                    </div>
         </div>
-    );
-}
+        
+                );
+            }

@@ -11,7 +11,6 @@ export default function EventAdd({
     const [ newEventLocation, setNewEventLocation ] = useState('');
     const [ newEventRepeat, setNewEventRepeat ] = useState('none'); // 'daily', 'weekly', 'monthly', 'yearly', 'none'
     const [ newRepeatEndDate, setNewRepeatEndDate] = useState('');
-    const [ editScope, setEditScope ] = useState('This event')
 
     useEffect(() => {
         if (eventToEdit) {
@@ -64,39 +63,52 @@ export default function EventAdd({
             return;
         }
     
-    
-        if (newEventRepeat !== 'none') {
-            const repeatedDates = createRepeatedEvents(new Date(newEventDate + 'T' + newEventTime), newEventRepeat);
-            repeatedDates.forEach(date => {
-                onSave({
-                    eventName: newEventName,
-                    eventTime: newEventTime,
-                    eventDate: date.toISOString().split('T')[0],
-                    eventLocation: newEventLocation,
-                    eventRepeat: newEventRepeat,
-                    eventRepeatEndDate: newRepeatEndDate,
-                    id: eventToEdit ? eventToEdit.id : null,
-                    editScope: editScope
-                });
-            });
-        } else {
+        // Check if we are editing an existing event
+        if (eventToEdit) {
+            // Update only the specific event
             onSave({
                 eventName: newEventName,
                 eventTime: newEventTime,
                 eventDate: newEventDate,
                 eventLocation: newEventLocation,
-                repeatOption: newEventRepeat,
+                eventRepeat: newEventRepeat,
                 eventRepeatEndDate: newRepeatEndDate,
-                id: eventToEdit ? eventToEdit.id : null,
-                editScope: editScope
+                id: eventToEdit.id,
             });
+        } else {
+            // Handle new event creation, possibly with repetition
+            if (newEventRepeat !== 'none') {
+                const repeatedDates = createRepeatedEvents(new Date(newEventDate + 'T' + newEventTime), newEventRepeat);
+                repeatedDates.forEach(date => {
+                    onSave({
+                        eventName: newEventName,
+                        eventTime: newEventTime,
+                        eventDate: date.toISOString().split('T')[0],
+                        eventLocation: newEventLocation,
+                        eventRepeat: newEventRepeat,
+                        eventRepeatEndDate: newRepeatEndDate,
+                    });
+                });
+            } else {
+                // Handle new single event
+                onSave({
+                    eventName: newEventName,
+                    eventTime: newEventTime,
+                    eventDate: newEventDate,
+                    eventLocation: newEventLocation,
+                    repeatOption: newEventRepeat,
+                    eventRepeatEndDate: newRepeatEndDate,
+                });
+            }
         }
     
-    
+        // Reset form fields
         setNewEventName('');
         setNewEventTime('');
         setNewEventDate('');
         setNewEventLocation('');
+        setNewEventRepeat('none');
+        setNewRepeatEndDate('');
     };
     
     
@@ -131,16 +143,7 @@ export default function EventAdd({
                 <input type="date" id="repeatEndDate" value={newRepeatEndDate} onChange={(e) => setNewRepeatEndDate(e.target.value)} />
             </div>
         )}
-         {eventToEdit && eventToEdit.eventRepeat !== 'none' && (
-                    <div>
-                        <label htmlFor="editScope">Breyta umfangi:</label>
-                        <select id="editScope" value={editScope} onChange={(e) => setEditScope(e.target.value)}>
-                            <option value="thisEvent">Aðeins þessi viðburður</option>
-                            <option value="thisAndFutureEvents">Þessi og framtíðarviðburðir</option>
-                            <option value="allEvents">Allir viðburðir í seríunni</option>
-                        </select>
-                    </div>
-                )}
+
                 <button type="submit">Vista viðburð</button>
                 <button type="button" onClick={onCancel}>Hætta við</button>
             </form>
