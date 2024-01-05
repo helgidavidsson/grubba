@@ -1,11 +1,12 @@
 import './App.css';
 import ParticipantList from './components/ParticipantList';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import GroupCreator from './components/group_creator/GroupCreator';
+import GroupCreator from './components/group_settings/GroupCreator';
 import Header from './components/Header';
-import Participants from './components/group_creator/Participants';
-import Events from './components/group_creator/Events';
-import Info from './components/group_creator/Info';
+import Participants from './components/group_settings/Participants';
+import Events from './components/group_settings/Events';
+import Info from './components/group_settings/Info';
+import Outreach from './components/group_settings/Outreach';
 
 function App() {
 
@@ -39,6 +40,11 @@ function App() {
           <Route path='vidburdir' element={
             <Events />
           } />
+          <Route path='tilkynningar' element={
+            <Outreach
+              ENDPOINT={ENDPOINT}
+            />
+          }/>
         </Route>
       </Routes>
     </Router>

@@ -46,30 +46,30 @@ export default function ParticipantList({
         newSocket.on('participantToggled', (data) => {
             setParticipants(prevParticipants => {
                 const updated = prevParticipants.map(p =>
-                    p.id === data.id ? { ...p, isChecked: data.isChecked } : p
+                    p.id === data.id ? { ...p, isCheckedAttendance: data.isCheckedAttendance } : p
                 );
                 return sortParticipants(updated); // Sort participants after updating
             });
         });
 
-
+            
 
       
 
         return () => newSocket.disconnect();
     }, [ENDPOINT]);
 
-    const handleToggle = (id, newIsChecked) => {
+    const handleToggle = (id, newisCheckedAttendance) => {
         const updatedParticipants = participants.map(p => {
             if (p.id === id) {
-                return { ...p, isChecked: newIsChecked };
+                return { ...p, isCheckedAttendance: newisCheckedAttendance };
             }
             return p;
         });
         setParticipants(updatedParticipants);
     
         // Emit the event to the server with the updated state
-        socket.emit('toggleParticipant', { id, isChecked: newIsChecked });
+        socket.emit('toggleParticipant', { id, isCheckedAttendance: newisCheckedAttendance });
     };
     
 
@@ -168,7 +168,7 @@ export default function ParticipantList({
                             key={participant.id}
                             name={participant.name}
                             participantId={participant.id}
-                            isChecked={participant.isChecked}
+                            isCheckedAttendance={participant.isCheckedAttendance}
                             onToggle={handleToggle}
                         />
                     ))}

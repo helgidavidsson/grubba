@@ -5,7 +5,7 @@ export default function Comments({
     ENDPOINT,
     name,
     participantId,
-    isChecked
+    isCheckedAttendance
     
 }) {
 
@@ -73,7 +73,7 @@ export default function Comments({
 
             {showPopup && (
                 <div className={styles.commentPopUp}>
-                    <p><b>{name}</b> {isChecked === true ? 'mætir' : isChecked === false ? 'mætir ekki' : 'hefur ekki merkt við'}</p>
+                    <p><b>{name}</b> {isCheckedAttendance === true ? 'mætir' : isCheckedAttendance === false ? 'mætir ekki' : 'hefur ekki merkt við'}</p>
                     <p></p>
                     {comments.map((comment, index) => (
                         <p key={index}>

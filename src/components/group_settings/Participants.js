@@ -40,8 +40,8 @@ export default function Participants({
                 id: participant.id,
                 name: participant.name, 
                 email: participant.email,
-                isChecked: participant.isChecked
-            
+                isCheckedAttendance: participant.isCheckedAttendance,
+                isCheckedEmail: participant.isCheckedEmail
             })));
             
         
@@ -52,7 +52,7 @@ export default function Participants({
 
     const handleSaveParticipants = () => {
         const dataToEmit = {
-            rows: rows // Your rows array already includes id, name, email, and isChecked
+            rows: rows // Your rows array already includes id, name, email, and isCheckedAttendance
         };
         console.log('Emitting participant data:', dataToEmit);
         socket.emit('saveParticipants', dataToEmit);

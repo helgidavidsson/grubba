@@ -4,13 +4,13 @@ import styles from './ParticipantsRadio.module.css';
 
 export default function ParticipantsRadio({
     ENDPOINT,
-    isChecked,
+    isCheckedAttendance,
     onToggle,
     participantId,
     name
 }) {
 
-    console.log(isChecked)
+    console.log(isCheckedAttendance)
     const handleRadioChange = (event) => {
         const newValue = event.target.value === 'yes';
         onToggle(participantId, newValue);
@@ -18,8 +18,8 @@ export default function ParticipantsRadio({
 
 
 
-    const backgroundColorClass = isChecked === true ? styles.greenBackground : '';
-    const lineThroughClass = isChecked === false ? styles.lineThrough : '';
+    const backgroundColorClass = isCheckedAttendance === true ? styles.greenBackground : '';
+    const lineThroughClass = isCheckedAttendance === false ? styles.lineThrough : '';
 
     return (
         <div className={styles.radioContainer}>
@@ -30,14 +30,14 @@ export default function ParticipantsRadio({
                 <input 
                     type="radio"
                     value="yes"
-                    checked={isChecked === true}
+                    checked={isCheckedAttendance === true}
                     onChange={handleRadioChange}
                     name={`attending-${participantId}`}
                 /> Já
                 <input 
                     type="radio"
                     value="no"
-                    checked={isChecked === false}
+                    checked={isCheckedAttendance === false}
                     onChange={handleRadioChange}
                     name={`attending-${participantId}`}
                 /> Nei
@@ -47,7 +47,7 @@ export default function ParticipantsRadio({
                 ENDPOINT={ENDPOINT}
                 name={name}
                 participantId={participantId}
-                isChecked={isChecked}
+                isCheckedAttendance={isCheckedAttendance}
                 />
 
            

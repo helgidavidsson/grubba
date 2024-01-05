@@ -23,20 +23,30 @@ let groupDescription = "";
 
 let events = [];
 
+let globalNotificationTime = '1h'; // Default value or load from a database if persisted
+
 io.on('connection', (socket) => {
     // Send the initial state to the newly connected client
-    socket.emit('initialState', { participants, title: groupTitle, description: groupDescription, events });
-    
+    socket.emit('initialState', { 
+        participants, 
+        title: groupTitle, 
+        description: groupDescription, 
+        events, 
+         });
+
+    socket.emit('initialNotificationTime', { timeBefore: globalNotificationTime });
+
+
     socket.on('toggleParticipant', (data) => {
-        console.log(`Toggling participant ${data.id}, isChecked: ${data.isChecked}`);
+        console.log(`Toggling participant ${data.id}, isCheckedAttendance: ${data.isCheckedAttendance}`);
         const participant = participants.find(p => p.id === data.id);
         if (participant) {
-            participant.isChecked = data.isChecked;
-            console.log(`Updated isChecked for participant ${data.id}: ${participant.isChecked}`);
+            participant.isCheckedAttendance = data.isCheckedAttendance;
+            console.log(`Updated isCheckedAttendance for participant ${data.id}: ${participant.isCheckedAttendance}`);
             io.emit('participantToggled', data);
         }
     });
-    
+
 
     // Add socket event for saving group information
 socket.on('saveInfo', (data) => {
@@ -51,26 +61,46 @@ socket.on('saveInfo', (data) => {
 });
 
 
+// Assuming your participant structure now has 'isCheckedEmail' and 'isCheckedAttendance'
+
+socket.on('toggleParticipantAttendance', (data) => {
+    const participant = participants.find(p => p.id === data.id);
+    if (participant) {
+        participant.isCheckedAttendance = data.isCheckedAttendance;
+        io.emit('participantAttendanceToggled', data);
+    }
+});
+
+
 socket.on('saveParticipants', (data) => {
     const { rows } = data;
-
-    // Create a map of existing participants by ID for easy access
     const existingParticipantsMap = new Map(participants.map(p => [p.id, p]));
-
-    // Update the participants array with new data, preserving comments
+    console.log("data : ", data)
     participants = rows.map(row => {
         const existingParticipant = existingParticipantsMap.get(row.id);
         return {
             id: row.id,
             name: row.name,
             email: row.email,
-            isChecked: row.isChecked,
-            comments: existingParticipant ? existingParticipant.comments : [] // Preserve existing comments
+            isCheckedEmail: row.isCheckedEmail, // Update with the new isCheckedEmail state
+            isCheckedAttendance: existingParticipant ? existingParticipant.isCheckedAttendance : null, // Preserve existing isCheckedAttendance or set to null            
+            comments: existingParticipant ? existingParticipant.comments : [],
+        
         };
     });
 
-    console.log('Updated participants:', participants);
     io.emit('participantsUpdated', participants);
+});
+
+socket.on('updateNotificationTime', (data) => {
+    globalNotificationTime = data.timeBefore;
+    
+    // Optionally, you can persist this update to a database
+
+    console.log('Updated global notification time:', globalNotificationTime);
+    
+    // Emit an event to update all clients with the new time
+    io.emit('notificationTimeUpdated', { timeBefore: globalNotificationTime });
 });
 
 
