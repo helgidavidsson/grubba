@@ -3,6 +3,9 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 
+const { scheduleEmails, scheduleAllEmails, cancelScheduledEmail } = require('./nodemailer');
+
+
 const app = express();
 app.use(cors())
 const server = http.createServer(app);
@@ -24,6 +27,12 @@ let groupDescription = "";
 let events = [];
 
 let globalNotificationTime = '1h'; // Default value or load from a database if persisted
+
+let adminName = "Helgi"
+
+groupLink = "http://localhost:3000"
+
+
 
 io.on('connection', (socket) => {
     // Send the initial state to the newly connected client
@@ -99,8 +108,13 @@ socket.on('updateNotificationTime', (data) => {
 
     console.log('Updated global notification time:', globalNotificationTime);
     
+    
+    
+
     // Emit an event to update all clients with the new time
     io.emit('notificationTimeUpdated', { timeBefore: globalNotificationTime });
+
+    scheduleAllEmails(events, participants, emailTemplate, globalNotificationTime, adminName, groupTitle, groupLink);
 });
 
 
@@ -124,19 +138,19 @@ socket.on('saveComment', (data) => {
 
     // Helper function to generate repeated event dates
 
+
     socket.on('addEvent', (newEvent) => {
-        // The newEvent object already contains all the necessary information, 
-        // including dates for repeated events.
+        console.log('Received New Event:', newEvent);
     
-        // Check if the event ID is provided, if not, generate a new ID.
         const eventID = newEvent.id || Date.now().toString(36) + Math.random().toString(36).substring(2);
-    
-        // Push the event to the events array.
         events.push({ ...newEvent, id: eventID });
-    
-        // Emit the updated events to all clients.
         io.emit('eventsUpdated', events);
-    });
+    
+        const emailParticipants = participants.filter(p => p.isCheckedEmail);
+    
+
+    scheduleEmails(emailParticipants, newEvent, emailTemplate, globalNotificationTime, adminName, groupTitle, groupLink );
+});
 
     socket.on('editEvent', (updatedEvent) => {
         // Find the index of the event to be updated
@@ -149,6 +163,17 @@ socket.on('saveComment', (data) => {
     
         // Emit the updated events to all clients
         io.emit('eventsUpdated', events);
+
+        // Reschedule email for the updated event
+        const task = scheduledTasks.get(updatedEvent.id);
+        if (task) {
+            task.stop(); // Stop the existing task
+            scheduledTasks.delete(updatedEvent.id); // Remove it from the map
+        }
+        const emailParticipants = participants.filter(p => p.isCheckedEmail);
+        const newTask =  scheduleEmails(emailParticipants, updatedEvent, emailTemplate, globalNotificationTime, adminName, groupTitle, groupLink );
+        scheduledTasks.set(updatedEvent.id, newTask); // Store the new task
+    
     });
     
     
@@ -163,8 +188,53 @@ socket.on('saveComment', (data) => {
             events = events.filter(event => event.id !== eventId); // Use eventId to identify the event
         }
         io.emit('eventsUpdated', events);
+        console.log("Attempting to cancel scheduled email for event:", eventId);
+        cancelScheduledEmail(eventId);
+        console.log("Cancellation attempted for event:", eventId);
+    });
+    let emailTemplate;
+    const fs = require('fs');
+    const path = require('path');
+    
+    // Path to the template file
+    const TEMPLATE_FILE_PATH = path.join(__dirname, 'emailTemplate.html');
+    
+    fs.readFile(TEMPLATE_FILE_PATH, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading template file at startup:', err);
+            emailTemplate = "Default template content here"; // Fallback content
+        } else {
+            emailTemplate = data;
+        }
     });
     
+
+    app.get('/getEmailTemplate', (req, res) => {
+        fs.readFile(TEMPLATE_FILE_PATH, 'utf8', (err, data) => {
+            if (err) {
+                console.error('Error reading template file:', err);
+                return res.status(500).send('Error reading template');
+            }
+            res.send({ emailTemplate: data });
+            console.log(emailTemplate)
+        });
+    });
+    
+    
+
+        socket.on('saveEmailTemplate', (newTemplate) => {
+            fs.writeFile(TEMPLATE_FILE_PATH, newTemplate, (err) => {
+                if (err) {
+                    console.error('Error writing to template file:', err);
+                    // Handle error (e.g., emit an error event back to the client)
+                    return;
+                }
+                console.log('Email template updated successfully', emailTemplate);
+                // Optionally, emit a confirmation event back to the client
+                socket.emit('emailTemplateUpdated');
+            });
+        });
+
     
 
 

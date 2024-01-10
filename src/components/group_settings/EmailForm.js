@@ -1,29 +1,32 @@
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './EmailForm.module.css'
 export default function EmailForm({
-
+    onSave,
+    initialEmailTemplate
 }) {
 
 
 
-    const defaultEmailTemplate = `
-    <p>Hæ [memberName],</p>
-    <p>[AdminName] hefur boðið þér í eftirfarandi viðburð:</p>
-    <p>[EventName]</p>
-    <p>Þú getur skráð mætingu gegnum þennan hlekk:</p>
-    <p>[Hlekkur]</p>
-    <p>Bestu kveðjur,<br>grubba.is</p>
-    `;
+   
+    const [emailContent, setEmailContent] = useState(initialEmailTemplate); // State for email content
 
-    const [emailContent, setEmailContent] = useState(defaultEmailTemplate); // State for email content
+    const handleSave = () => {
+        onSave(emailContent);
+    };
+
+    useEffect(() => {
+        setEmailContent(initialEmailTemplate);
+        console.log(initialEmailTemplate)
+    }, [initialEmailTemplate]);
+    
 
     return(
         <div>
         <h3>Sjálfvirkur tölvupóstur</h3>
         <ReactQuill className={styles.form} value={emailContent} onChange={setEmailContent}/>
-
+        <button onClick={handleSave}>Vista umfang</button>
         </div>
     )
 }
