@@ -1,0 +1,49 @@
+.infoContainer{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+
+.input {
+    width: 200px;
+    margin: auto;
+}
+
+
+.inputLarge {
+    width: 200px;
+    height:200px;
+    margin: auto;
+}
+
+
+
+.cameraIcon {
+    width: 50px; /* smaller width for camera icon */
+    height: 50px; /* smaller height for camera icon */
+    margin: auto;
+    display: block;
+    padding: 150px;
+    border: 4px solid gray;
+    cursor: pointer;
+    transition: 0.2s;
+
+}
+
+.cameraIcon:hover {
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    position: relative;
+}
+
+
+.groupImageUploaded {
+    width: 300px; /* larger width for uploaded images */
+    height: auto; /* larger height for uploaded images */
+    margin: auto;
+    display: block;
+    border: 4px solid gray;
+    cursor: pointer;
+
+
+}

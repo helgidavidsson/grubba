@@ -54,16 +54,13 @@ export default function Events() {
 };
 
 const deleteEvent = (event) => {
-    console.log()
     // Check if the event is repeated
     if (event.eventRepeat && event.eventRepeat !== 'none') {
         showDeleteConfirmation(event);
-        console.log("Deleting event:", event); // Check the event details
     } else {
         // Use the traditional confirmation for non-repeated events
         const isConfirmed = window.confirm(`Ertu viss um að þú viljir eyða viðburði: "${event.eventName}"?`);
         if (isConfirmed) {
-            console.log(event.id)
             socket.emit('deleteEvent', { eventId: event.id, scope: 'thisEvent' });
         }
     }

@@ -1,5 +1,16 @@
 .layout {
-    width: 400px;
+    width: 500px;
     background-color: #e6e8e6;
-   
+    height: 100vh; /* Updated to fill the viewport height */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Adding shadow */
+}
+
+.title {
+    margin: 20px;
+    
+}
+
+.description {
+    text-align: left;
+    margin: 20px;
 }

@@ -3,10 +3,26 @@
     color: white;
     display: flex;
     justify-content: center;
+    height: 55px;
 }
 
 .logo {
     text-align: left;
     width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+.link {
+   
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    margin: 20px;
+   
+}
+
+.link:hover {
+    text-decoration: underline;
+}

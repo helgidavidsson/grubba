@@ -12,6 +12,7 @@ export default function NotificationScheduler({
         { value: '2h', label: '2 klukkutímum fyrir' },
         { value: '4h', label: '4 klukkutímum fyrir' },
         { value: '8h', label: '8 klukkutímum fyrir' },
+        { value: '12h', label: '12 klukkutímum fyrir' },
         { value: '1d', label: '1 degi fyrir' },
         { value: '2d', label: '2 dögum fyrir' },
         { value: '4d', label: '4 dögum fyrir' },

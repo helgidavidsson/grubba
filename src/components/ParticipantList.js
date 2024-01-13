@@ -103,17 +103,21 @@ export default function ParticipantList({
         const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30) % 12);
         const years = Math.floor(difference / (1000 * 60 * 60 * 24 * 365));
     
-        // Construct the time left string
-        let timeLeftString = '';
-        if (years > 0) timeLeftString += `${years} ár `;
-        if (months > 0) timeLeftString += `${months} mánuði `;
-        if (days > 0) timeLeftString += `${days} daga `;
-        if (hours > 0) timeLeftString += `${hours} klukkutíma `;
-        if (minutes > 0) timeLeftString += `${minutes} mínútu`;
+        // Return the first non-zero time unit
+        if (years > 0) return `${years} ár`;
+        if (months > 0) return `${months} mánuði`;
+        if (days > 0) return `${days} daga`;
+        if (hours > 0) return `${hours} klukkutíma`;
+        if (minutes > 0) return `${minutes} mínútu`;
     
-        return timeLeftString.trim();
+        return '';
     };
     
+    const countCheckedAttendenceParticipants = () => {
+        return participants.filter(participant => participant.isCheckedAttendance === true).length;
+    };
+
+
 
     return (
         <div>
@@ -160,7 +164,7 @@ export default function ParticipantList({
                         </p>
 
                         <h3 className={styles.h3}>Mætingarlisti</h3>
-                        
+                        <p>{countCheckedAttendenceParticipants()} af {participants.length} mæta</p>
                             {participants.map((participant) => (
                         
                         <ParticipantsRadio

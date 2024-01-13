@@ -33,6 +33,22 @@ let adminName = "Helgi"
 groupLink = "http://localhost:3000"
 
 
+// signup
+app.use(express.json()); 
+
+app.post('/signup', (req, res) => {
+    // Extract user data from request body
+    const { fullName, email, phone, password } = req.body;
+
+    // Here you should add your logic to handle the sign up
+    // This could include validating the data, checking if the email is already in use,
+    // hashing the password, and storing the user in a database
+
+    // For now, let's just log the data and send a simple JSON response
+    console.log('Received sign up data:', req.body);
+    res.json({ message: 'Sign up successful' }); // Send a JSON response
+});
+
 
 io.on('connection', (socket) => {
     // Send the initial state to the newly connected client

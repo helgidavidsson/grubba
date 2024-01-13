@@ -6,9 +6,9 @@ export default function Sidebar({
     
     return(
         <div className={styles.layout}>
-            <h2>{title}</h2>
+            <h2 className={styles.title}>{title}</h2>
 
-            <p>{description}</p>
+            <p className={styles.description}>{description}</p>
         </div>
     )
 }

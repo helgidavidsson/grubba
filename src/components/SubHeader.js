@@ -4,7 +4,7 @@ export default function SubHeader() {
     return(
         <div className={styles.layout}>
              <nav>
-                <Link className={styles.link} to="/">Listi</Link>
+                <Link className={styles.link} to="/grubba">Listi</Link>
                 <Link className={styles.link} to="/stillingar">Stillingar</Link>
             </nav>
         </div>

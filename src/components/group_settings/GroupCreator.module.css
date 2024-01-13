@@ -6,22 +6,8 @@
     flex-grow: 1;
 }
 
-.infoContainer{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-}
 
-.input {
-    width: 200px;
-    margin: auto;
-}
 
-.inputLarge {
-    width: 200px;
-    height:200px;
-    margin: auto;
-}
 
 .table {
     text-align: center;

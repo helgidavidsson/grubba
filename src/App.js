@@ -7,6 +7,9 @@ import Participants from './components/group_settings/Participants';
 import Events from './components/group_settings/Events';
 import Info from './components/group_settings/Info';
 import Outreach from './components/group_settings/Outreach';
+import Home from './components/Home';
+import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
 
 function App() {
 
@@ -15,39 +18,49 @@ function App() {
   
   return (
     <div className="App">
-    <Router>
-      <Header />
-      <Routes>
-        <Route path='/' element={<ParticipantList ENDPOINT={ENDPOINT} />} />
-        <Route path='/stillingar/*' element={<GroupCreator ENDPOINT={ENDPOINT} />}>
-          {/* Default route for /stillingar */}
-          <Route index element={
-             <Info
-               ENDPOINT={ENDPOINT}
-             />
-          } />
-          {/* Specific route for /stillingar/upplysingar */}
-          <Route path='upplysingar' element={
-             <Info
-               ENDPOINT={ENDPOINT}
-             />
-          } />
-          <Route path='medlimir' element={
-            <Participants
-              ENDPOINT={ENDPOINT}
-            />
-          } />
-          <Route path='vidburdir' element={
-            <Events />
-          } />
-          <Route path='tilkynningar' element={
-            <Outreach
-              ENDPOINT={ENDPOINT}
-            />
-          }/>
-        </Route>
-      </Routes>
-    </Router>
+<Router>
+  <Header />
+  <Routes>
+    {/* Home route */}
+    <Route path='/' element={<Home />} />
+
+    <Route path='/innskraning' element={<SignIn ENDPOINT={ENDPOINT} />} />
+
+    <Route path='/nyskraning' element={<SignUp ENDPOINT={ENDPOINT} />} />
+
+
+    {/* ParticipantList route */}
+    <Route path='/grubba' element={<ParticipantList ENDPOINT={ENDPOINT} />} />
+
+    {/* GroupCreator and its nested routes */}
+    <Route path='/stillingar/*' element={<GroupCreator ENDPOINT={ENDPOINT} />}>
+      {/* Default route for /stillingar */}
+      <Route index element={
+        <Info
+          ENDPOINT={ENDPOINT}
+        />
+      } />
+      {/* Other nested routes */}
+      <Route path='upplysingar' element={
+        <Info
+          ENDPOINT={ENDPOINT}
+        />
+      } />
+      <Route path='medlimir' element={
+        <Participants
+          ENDPOINT={ENDPOINT}
+        />
+      } />
+      <Route path='vidburdir' element={<Events />} />
+      <Route path='tilkynningar' element={
+        <Outreach
+          ENDPOINT={ENDPOINT}
+        />
+      }/>
+    </Route>
+  </Routes>
+</Router>
+
   </div>
   
   );
