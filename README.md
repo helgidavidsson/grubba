@@ -46,7 +46,7 @@ We welcome contributions! If you have ideas for new features or improvements, fe
 
 ## License
 
-This project is currently unlicensed. More details about the license will be added in the future.
+This project is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License - see the LICENSE.md file for details.
 
 ## Contact
 
